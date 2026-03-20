@@ -68,6 +68,11 @@ const DownloadPage = () => {
             <h1 className="text-xl font-bold text-slate-800">Lien inaccessible</h1>
             <p className="text-slate-500 text-sm leading-relaxed">{error}</p>
           </div>
+        ) : !file ? (
+          <div className="max-w-md mx-auto bg-white p-8 rounded-3xl shadow-xl border border-slate-100 text-center space-y-4 animate-in zoom-in duration-300">
+            <h1 className="text-xl font-bold text-slate-800">Aucune donnée</h1>
+            <p className="text-slate-500 text-sm leading-relaxed">Les informations du fichier n'ont pas pu être chargées correctement.</p>
+          </div>
         ) : (
           <div className="space-y-8 animate-in slide-in-from-bottom-5 duration-500">
             
