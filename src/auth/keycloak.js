@@ -1,9 +1,9 @@
 import Keycloak from 'keycloak-js';
 
 const keycloakConfig = {
-  url: 'https://sso-auth.eneogroup.site',
-  realm: 'eneogroup-si',
-  clientId: 'eneo-file-web'
+  url: import.meta.env.VITE_KEYCLOAK_URL || 'https://sso-auth.eneogroup.site',
+  realm: import.meta.env.VITE_KEYCLOAK_REALM || 'eneogroup-si',
+  clientId: import.meta.env.VITE_KEYCLOAK_CLIENT_ID || 'eneo-file-web'
 };
 
 const keycloak = new Keycloak(keycloakConfig);
