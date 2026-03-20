@@ -222,10 +222,10 @@ const FileDetailPage = () => {
                     <Layout className="w-4 h-4 opacity-50" />
                 </div>
                 <div className="bg-white/10 p-4 rounded-2xl border border-white/20 break-all text-xs font-mono mb-4 text-violet-100">
-                    {file.download_url}
+                    {file.download_url?.replace('/api/v1/d/', '/d/')}
                 </div>
                 <button 
-                    onClick={() => navigator.clipboard.writeText(file.download_url)}
+                    onClick={() => navigator.clipboard.writeText(file.download_url?.replace('/api/v1/d/', '/d/'))}
                     className="w-full bg-eneo-gold text-eneo-violet font-black py-3 rounded-xl shadow-lg hover:scale-[1.02] active:scale-95 transition-all text-xs uppercase tracking-widest"
                 >
                     Copier le lien

@@ -75,9 +75,9 @@ const Dashboard = () => {
                   <span className="font-bold">Fichier uploadé avec succès !</span>
                 </div>
                 <div className="flex items-center space-x-2 bg-white p-3 rounded-xl border border-emerald-100 shadow-sm">
-                  <code className="text-xs flex-1 truncate">{lastUploadResult.download_url || 'Génération du lien...'}</code>
+                  <code className="text-xs flex-1 truncate">{lastUploadResult.download_url?.replace('/api/v1/d/', '/d/') || 'Génération du lien...'}</code>
                   <button 
-                    onClick={() => copyToClipboard(lastUploadResult.download_url)}
+                    onClick={() => copyToClipboard(lastUploadResult.download_url?.replace('/api/v1/d/', '/d/'))}
                     className="p-2 hover:bg-emerald-50 text-emerald-600 rounded-lg transition-colors"
                   >
                     <Copy className="w-4 h-4" />
