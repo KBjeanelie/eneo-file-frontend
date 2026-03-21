@@ -11,9 +11,9 @@ const StorageSpace = () => {
     fetchQuota();
   }, [fetchQuota]);
 
-  const storageUsed = quota?.total_uploaded_size || 0;
-  const storageLimit = 1 * 1024 * 1024 * 1024; // 1 GB
-  const storagePercent = Math.min(Math.round((storageUsed / storageLimit) * 100), 100);
+  const storageUsed = quota?.used_bytes || 0;
+  const storageLimit = quota?.total_limit_bytes || (1 * 1024 * 1024 * 1024);
+  const storagePercent = quota?.percentage || 0;
   const isFull = storagePercent >= 100;
 
   return (

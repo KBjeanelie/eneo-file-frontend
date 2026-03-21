@@ -24,9 +24,9 @@ const Sidebar = ({ onNewFile }) => {
     { icon: <HardDrive size={20} />, label: 'Espace de Stockage', path: '/storage' },
   ];
 
-  const storageUsed = quota?.total_uploaded_size || 0;
-  const storageLimit = 1 * 1024 * 1024 * 1024; // 1 GB
-  const storagePercent = Math.min(Math.round((storageUsed / storageLimit) * 100), 100);
+  const storageUsed = quota?.used_bytes || 0;
+  const storageLimit = quota?.total_limit_bytes || (1 * 1024 * 1024 * 1024);
+  const storagePercent = quota?.percentage || 0;
 
   return (
     <aside className="w-64 flex-shrink-0 bg-white border-r border-slate-100 flex flex-col pt-4 overflow-y-auto">
