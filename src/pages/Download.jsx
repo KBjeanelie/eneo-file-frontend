@@ -32,12 +32,18 @@ const DownloadPage = () => {
     fetchFileData();
   }, [access_token]);
 
-  const handleDownload = () => {
+  const handleDownload = async () => {
     if (!isAuthenticated()) {
         login();
         return;
     }
-    window.location.href = `${api.defaults.baseURL}/d/${access_token}/download/`;
+    try {
+        const response = await api.get(`/d/${access_token}/download/?redirect=false`);
+        window.open(response.data.download_url, '_blank');
+    } catch (err) {
+        console.error("Erreur de téléchargement", err);
+        alert("Impossible de générer le lien de téléchargement.");
+    }
   };
 
   if (loading) {
