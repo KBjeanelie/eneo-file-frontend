@@ -171,9 +171,14 @@ const Settings = () => {
                                 <input 
                                     type="number"
                                     min="1"
-                                    max="30"
+                                    max="5"
                                     value={localSettings.default_expiration_days}
-                                    onChange={(e) => setLocalSettings({...localSettings, default_expiration_days: parseInt(e.target.value)})}
+                                    onChange={(e) => {
+                                        let val = parseInt(e.target.value);
+                                        if (val > 5) val = 5;
+                                        if (val < 1) val = 1;
+                                        setLocalSettings({...localSettings, default_expiration_days: val});
+                                    }}
                                     className="w-20 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-right"
                                 />
                             </div>

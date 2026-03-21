@@ -195,18 +195,18 @@ const HelpCenter = () => {
 
            <div className="bg-white rounded-[2.5rem] border border-slate-100 drive-shadow-sm p-8 space-y-6">
               <h3 className="text-sm font-black uppercase tracking-widest text-slate-400 border-b border-slate-50 pb-4">Liens Rapides</h3>
-              <div className="space-y-4">
-                 {[
-                   { label: "Guides Techniques", icon: <ExternalLink size={14} /> },
-                   { label: "Statut des Services", icon: <ExternalLink size={14} /> },
-                   { label: "Conditions d'utilisation", icon: <ExternalLink size={14} /> }
-                 ].map((link, i) => (
-                    <button key={i} className="w-full flex items-center justify-between p-4 rounded-2xl bg-slate-50 hover:bg-slate-100 transition-colors group">
-                       <span className="text-xs font-bold text-slate-600 group-hover:text-eneo-violet">{link.label}</span>
-                       <span className="text-slate-300 group-hover:text-eneo-violet">{link.icon}</span>
-                    </button>
-                 ))}
-              </div>
+               <div className="space-y-4">
+                  {[
+                    { label: "Comment ça marche ?", path: "/help/how-it-works" },
+                    { label: "Sécurité & Protection", path: "/help/security" },
+                    { label: "Politique de confidentialité", path: "/help/privacy" }
+                  ].map((link, i) => (
+                     <Link key={i} to={link.path} className="w-full flex items-center justify-between p-4 rounded-2xl bg-slate-50 hover:bg-slate-100 transition-colors group text-left">
+                        <span className="text-xs font-bold text-slate-600 group-hover:text-eneo-violet">{link.label}</span>
+                        <ExternalLink size={14} className="text-slate-300 group-hover:text-eneo-violet" />
+                     </Link>
+                  ))}
+               </div>
            </div>
         </div>
       </div>

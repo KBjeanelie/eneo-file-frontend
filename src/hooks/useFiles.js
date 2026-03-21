@@ -45,6 +45,12 @@ export const useFiles = () => {
     setError(null);
     setUploadProgress(0);
     
+    const maxSize = 250 * 1024 * 1024;
+    if (fileObj.size > maxSize) {
+      setError(`Le fichier est trop volumineux (${(fileObj.size / (1024 * 1024)).toFixed(2)} Mo). La limite est de 250 Mo.`);
+      return;
+    }
+
     const formData = new FormData();
     formData.append('file', fileObj);
     if (title) formData.append('title', title);

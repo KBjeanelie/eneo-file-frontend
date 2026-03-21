@@ -7,6 +7,9 @@ import FileDetailPage from './pages/FileDetail';
 import RecentFiles from './pages/RecentFiles';
 import StorageSpace from './pages/StorageSpace';
 import HelpCenter from './pages/HelpCenter';
+import HowItWorks from './pages/help/HowItWorks';
+import Security from './pages/help/Security';
+import PrivacyPolicy from './pages/help/PrivacyPolicy';
 import Settings from './pages/Settings';
 import Layout from './components/layout/Layout';
 import keycloak from './auth/keycloak';
@@ -39,7 +42,10 @@ function App() {
            <Route path="/files/:id" element={<FileDetailPage />} />
            <Route path="/recent" element={<RecentFiles />} />
            <Route path="/storage" element={<StorageSpace />} />
-           <Route path="/help" element={<HelpCenter />} /> {/* Added HelpCenter route */}
+           <Route path="/help" element={<HelpCenter />} />
+           <Route path="/help/how-it-works" element={<HowItWorks />} />
+           <Route path="/help/security" element={<Security />} />
+           <Route path="/help/privacy" element={<PrivacyPolicy />} />
            <Route path="/settings" element={<Settings />} />
         </Route>
 

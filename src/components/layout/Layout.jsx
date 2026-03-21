@@ -23,6 +23,7 @@ const Layout = () => {
       fetchQuota();
     } catch (err) {
       setCurrentUpload(null);
+      setError(err.message);
     }
   };
 
@@ -35,6 +36,21 @@ const Layout = () => {
 
         <main className="flex-1 overflow-y-auto bg-white p-6 relative">
           <div className="max-w-6xl mx-auto h-full">
+            <AnimatePresence>
+              {error && (
+                <motion.div 
+                  initial={{ opacity: 0, y: -20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  className="mb-6 p-4 bg-rose-50 border border-rose-100 rounded-2xl flex items-center justify-between group"
+                >
+                  <div className="flex items-center space-x-3 text-rose-600">
+                    <span className="font-bold text-sm">{error}</span>
+                  </div>
+                  <button onClick={() => setError(null)} className="text-rose-300 hover:text-rose-500 font-bold transition-colors">×</button>
+                </motion.div>
+              )}
+            </AnimatePresence>
             <Outlet />
           </div>
         </main>
@@ -66,7 +82,7 @@ const Layout = () => {
                         <DropZone onFileSelect={handleFileSelect} isUploading={!!currentUpload} />
                         <div className="flex flex-wrap justify-center gap-1.5 mt-6 max-w-lg mx-auto">
                            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-300 w-full text-center mb-2">Extensions Supportées</span>
-                           {["JPG", "PNG", "GIF", "PDF", "DOC", "DOCX", "XLS", "XLSX", "PPTX", "ZIP", "RAR", "MP3", "WAV", "MP4", "MKV", "MOV", "AVI", "WMV", "FLV", "WEBM"].map((ext) => (
+                           {["JPG", "PNG", "GIF", "WEBP", "PDF", "DOCX", "XLSX", "PPTX", "ZIP", "RAR", "7Z", "SQL", "PSD", "AI", "SVG", "MP4", "MKV", "MOV", "AVI", "ISO", "APK"].map((ext) => (
                              <span key={ext} className="px-2 py-1 bg-slate-50 border border-slate-100 rounded-lg text-[9px] font-bold text-slate-400 hover:text-eneo-violet hover:border-eneo-violet/30 transition-colors">
                                .{ext}
                              </span>
