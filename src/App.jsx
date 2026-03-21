@@ -11,6 +11,7 @@ import HowItWorks from './pages/help/HowItWorks';
 import Security from './pages/help/Security';
 import PrivacyPolicy from './pages/help/PrivacyPolicy';
 import Settings from './pages/Settings';
+import LandingPage from './pages/LandingPage';
 import Layout from './components/layout/Layout';
 import keycloak from './auth/keycloak';
 import { useSettings } from './hooks/useSettings';
@@ -33,6 +34,7 @@ function App() {
     <Router>
       <Routes>
         {/* Public Routes */}
+        <Route path="/" element={<LandingPage />} />
         <Route path="/d/:access_token" element={<DownloadPage />} />
         <Route path="/callback" element={<LoginCallback />} />
         
@@ -50,7 +52,6 @@ function App() {
         </Route>
 
         {/* Redirects */}
-        <Route path="/" element={<Navigate to="/dashboard" replace />} />
         <Route path="*" element={
           <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50">
             <h1 className="text-6xl font-black text-eneo-violet mb-4">404</h1>
