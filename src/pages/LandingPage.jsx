@@ -49,7 +49,7 @@ const LandingPage = () => {
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <div className="bg-eneo-gradient p-2 rounded-xl shadow-lg">
-              <Cloud className="text-white w-6 h-6" />
+              <Cloud className="text-eneo-violet w-10 h-10" />
             </div>
             <span className="text-xl font-black text-slate-800 tracking-tight">Eneo <span className="text-eneo-violet">File</span></span>
           </div>
@@ -226,8 +226,8 @@ const LandingPage = () => {
          <div className="max-w-4xl mx-auto bg-eneo-gradient rounded-[3rem] p-12 lg:p-20 text-center text-white relative overflow-hidden drive-shadow">
             <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -mr-32 -mt-32" />
             <div className="relative z-10 space-y-8">
-               <h2 className="text-4xl lg:text-5xl font-black tracking-tight">Prêt à transformer votre gestion de fichiers ?</h2>
-               <p className="text-violet-100 font-medium text-lg max-w-xl mx-auto opacity-80">Rejoignez des centaines de professionnels qui font confiance à Eneo File pour leur quotidien.</p>
+               <h2 className="text-4xl lg:text-5xl font-black">Prêt à transformer votre gestion de fichiers ?</h2>
+               <p className="text-violet-100 font-medium text-lg max-w-xl mx-auto opacity-50">Rejoignez des centaines de professionnels qui font confiance à Eneo File pour leur quotidien.</p>
                <button 
                  onClick={handleStart}
                  className="px-12 py-5 bg-white text-eneo-violet rounded-2xl font-black text-sm uppercase tracking-[0.2em] shadow-2xl hover:bg-violet-50 hover:-translate-y-1 transition-all"
