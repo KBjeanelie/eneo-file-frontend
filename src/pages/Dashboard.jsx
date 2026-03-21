@@ -5,7 +5,7 @@ import Sidebar from '../components/layout/Sidebar';
 import DropZone from '../components/ui/DropZone';
 import FileCard from '../components/ui/FileCard';
 import UploadProgress from '../components/ui/UploadProgress';
-import { AlertCircle, CheckCircle2, Copy, Info, List, Grid3X3, MoreVertical } from 'lucide-react';
+import { AlertCircle, CheckCircle2, Copy, Info, List, Grid3X3, MoreVertical, Files } from 'lucide-react';
 import keycloak from '../auth/keycloak';
 import { motion, AnimatePresence } from 'framer-motion';
 
