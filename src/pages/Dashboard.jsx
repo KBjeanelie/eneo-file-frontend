@@ -47,6 +47,16 @@ const Dashboard = () => {
             <p className="text-slate-500 max-w-lg mx-auto">
               Glissez et déposez n'importe quel fichier pour générer un lien de téléchargement sécurisé et éphémère.
             </p>
+            
+            <div className="flex flex-wrap justify-center gap-2 mt-4 max-w-2xl mx-auto px-4">
+              <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 w-full mb-1">Formats supportés</span>
+              {["PDF", "JPG/PNG/GIF/WEBP", "DOCX/XLSX/PPTX", "MP4/MKV/MOV/AVI", "MP3", "ZIP"].map((ext) => (
+                <span key={ext} className="px-2 py-1 bg-white border border-slate-100 rounded-lg text-[9px] font-bold text-slate-500 shadow-sm">
+                  {ext}
+                </span>
+              ))}
+              <span className="text-[10px] text-slate-400 mt-1 w-full italic">Et bien d'autres (TXT, CSV, WMV, FLV, WEBM...)</span>
+            </div>
           </section>
 
           {/* Upload Area */}

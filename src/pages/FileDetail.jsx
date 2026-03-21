@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useFiles } from '../hooks/useFiles';
 import Header from '../components/layout/Header';
-import { ArrowLeft, Trash2, ShieldOff, Save, Clock, Download, HardDrive, BarChart3, MapPin, Globe, Layout, User } from 'lucide-react';
+import { ArrowLeft, Trash2, Shield, ShieldOff, Save, Clock, Download, HardDrive, BarChart3, MapPin, Globe, Layout, User } from 'lucide-react';
 import api from '../api/client';
 import { formatBytes, formatDate } from '../utils/format';
 import keycloak from '../auth/keycloak';
