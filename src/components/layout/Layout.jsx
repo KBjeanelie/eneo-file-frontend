@@ -10,7 +10,7 @@ import { Outlet } from 'react-router-dom';
 
 const Layout = () => {
   const [showUploadModal, setShowUploadModal] = useState(false);
-  const { uploadFile, uploadProgress, fetchFiles, fetchQuota } = useFiles();
+  const { uploadFile, uploadProgress, fetchFiles, fetchQuota, error, setError } = useFiles();
   const [currentUpload, setCurrentUpload] = useState(null);
 
   const handleFileSelect = async (file) => {
