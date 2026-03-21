@@ -50,13 +50,19 @@ const FileDetailPage = () => {
     }
   };
 
-  const handleDeactivate = async () => {
-    if (!window.confirm("Voulez-vous vraiment désactiver ce lien ?")) return;
+  const handleToggleActive = async () => {
+    const action = file.is_active ? 'deactivate' : 'activate';
+    const confirmMsg = file.is_active 
+      ? "Voulez-vous vraiment désactiver ce lien ? Il ne sera plus accessible publiquement." 
+      : "Voulez-vous réactiver ce lien ?";
+      
+    if (!window.confirm(confirmMsg)) return;
+    
     try {
-      await api.post(`/files/${id}/deactivate/`);
+      await api.post(`/files/${id}/${action}/`);
       fetchFileDetail();
     } catch (err) {
-      alert("Erreur.");
+      alert("Erreur lors de la modification du statut.");
     }
   };
 
@@ -95,17 +101,55 @@ const FileDetailPage = () => {
                     <FileTypeIcon mimeType={file.mime_type} className="w-12 h-12" />
                 </div>
                 <div className="flex-1 space-y-1">
-                    <div className="flex justify-between">
-                        <h1 className="text-2xl font-bold text-slate-800">{file.title}</h1>
+                    <div className="flex justify-between items-start">
+                        {editing ? (
+                          <div className="flex-1 mr-4">
+                            <input 
+                              type="text" 
+                              value={formData.title} 
+                              onChange={(e) => setFormData({...formData, title: e.target.value})}
+                              className="w-full text-2xl font-bold text-slate-800 border-b-2 border-eneo-violet focus:outline-none bg-slate-50 px-2 py-1 rounded-t-lg"
+                              placeholder="Titre du fichier"
+                            />
+                            <div className="mt-2 flex items-center space-x-2">
+                              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Limite DL :</span>
+                              <input 
+                                type="number" 
+                                value={formData.max_downloads} 
+                                onChange={(e) => setFormData({...formData, max_downloads: parseInt(e.target.value)})}
+                                className="w-16 text-sm font-bold text-slate-700 border border-slate-200 rounded px-2 py-0.5 focus:border-eneo-violet outline-none"
+                              />
+                            </div>
+                          </div>
+                        ) : (
+                          <h1 className="text-2xl font-bold text-slate-800">{file.title}</h1>
+                        )}
+                        
                         <div className="flex space-x-2">
                            {!editing ? (
-                             <button onClick={() => setEditing(true)} className="p-2 text-slate-400 hover:text-eneo-violet hover:bg-slate-50 rounded-xl transition-all">
-                               <BarChart3 className="w-5 h-5" />
+                             <button 
+                              onClick={() => setEditing(true)} 
+                              className="p-2 text-slate-400 hover:text-eneo-violet hover:bg-slate-50 rounded-xl transition-all"
+                              title="Modifier les détails"
+                             >
+                                <BarChart3 className="w-5 h-5 transition-transform group-hover:scale-110" />
                              </button>
                            ) : (
-                             <button onClick={handleUpdate} className="p-2 text-emerald-500 hover:bg-emerald-50 rounded-xl transition-all">
-                               <Save className="w-5 h-5" />
-                             </button>
+                             <>
+                               <button 
+                                onClick={() => setEditing(false)} 
+                                className="p-2 text-slate-400 hover:bg-slate-100 rounded-xl transition-all text-xs font-bold uppercase tracking-wider"
+                               >
+                                 Annuler
+                               </button>
+                               <button 
+                                onClick={handleUpdate} 
+                                className="p-2 bg-eneo-violet text-white hover:bg-violet-800 rounded-xl shadow-lg transition-all flex items-center space-x-1 px-3"
+                               >
+                                 <Save className="w-4 h-4" />
+                                 <span className="text-xs font-bold uppercase tracking-wider">Sauver</span>
+                               </button>
+                             </>
                            )}
                         </div>
                     </div>
@@ -194,13 +238,25 @@ const FileDetailPage = () => {
                 
                 <div className="space-y-4">
                     <button 
-                        onClick={handleDeactivate}
-                        disabled={!file.is_active}
-                        className="w-full flex items-center justify-between p-4 rounded-2xl bg-slate-50 hover:bg-rose-50 hover:text-rose-600 transition-all group disabled:opacity-50 disabled:pointer-events-none"
+                        onClick={handleToggleActive}
+                        className={`w-full flex items-center justify-between p-4 rounded-2xl transition-all group ${
+                          file.is_active 
+                            ? 'bg-slate-50 hover:bg-rose-50 hover:text-rose-600 font-bold' 
+                            : 'bg-emerald-50 text-emerald-700 font-black ring-1 ring-emerald-200 hover:bg-emerald-100'
+                        }`}
                     >
                         <div className="flex items-center space-x-3">
-                            <ShieldOff className="w-5 h-5 text-slate-400 group-hover:text-rose-500" />
-                            <span className="text-sm font-bold">Désactiver le lien</span>
+                            {file.is_active ? (
+                              <>
+                                <ShieldOff className="w-5 h-5 text-slate-400 group-hover:text-rose-500" />
+                                <span className="text-sm">Désactiver le lien</span>
+                              </>
+                            ) : (
+                              <>
+                                <Shield className="w-5 h-5 text-emerald-600" />
+                                <span className="text-sm uppercase tracking-tighter">Réactiver le lien</span>
+                              </>
+                            )}
                         </div>
                     </button>
 
@@ -216,20 +272,34 @@ const FileDetailPage = () => {
                 </div>
             </section>
 
-            <section className="eneo-gradient rounded-3xl p-8 text-white shadow-xl shadow-violet-200">
+            <section className={`rounded-3xl p-8 text-white shadow-xl transition-all duration-500 ${
+              file.is_active ? 'eneo-gradient shadow-violet-200' : 'bg-slate-400 shadow-slate-200 opacity-60 grayscale'
+            }`}>
                 <div className="flex items-center justify-between mb-4">
-                    <h3 className="font-black text-[10px] uppercase tracking-[0.2em] opacity-70">Lien Public</h3>
+                    <h3 className="font-black text-[10px] uppercase tracking-[0.2em] opacity-70">
+                      {file.is_active ? 'Lien Public' : 'Lien Suspendu'}
+                    </h3>
                     <Layout className="w-4 h-4 opacity-50" />
                 </div>
-                <div className="bg-white/10 p-4 rounded-2xl border border-white/20 break-all text-xs font-mono mb-4 text-violet-100">
-                    {file.download_url}
-                </div>
-                <button 
-                    onClick={() => navigator.clipboard.writeText(file.download_url)}
-                    className="w-full bg-eneo-gold text-eneo-violet font-black py-3 rounded-xl shadow-lg hover:scale-[1.02] active:scale-95 transition-all text-xs uppercase tracking-widest"
-                >
-                    Copier le lien
-                </button>
+                
+                {file.is_active ? (
+                  <>
+                    <div className="bg-white/10 p-4 rounded-2xl border border-white/20 break-all text-xs font-mono mb-4 text-violet-100">
+                        {file.download_url}
+                    </div>
+                    <button 
+                        onClick={() => navigator.clipboard.writeText(file.download_url)}
+                        className="w-full bg-eneo-gold text-eneo-violet font-black py-3 rounded-xl shadow-lg hover:scale-[1.02] active:scale-95 transition-all text-xs uppercase tracking-widest"
+                    >
+                        Copier le lien
+                    </button>
+                  </>
+                ) : (
+                  <div className="bg-black/10 p-4 rounded-2xl border border-white/10 text-center py-6">
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-white/80">Lien temporairement inactif</p>
+                    <p className="text-[8px] opacity-60 mt-2 italic px-2">Réactivez-le dans "Actions de Sécurité" pour le partager à nouveau.</p>
+                  </div>
+                )}
             </section>
           </div>
         </div>
