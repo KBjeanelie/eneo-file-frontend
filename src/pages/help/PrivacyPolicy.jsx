@@ -53,4 +53,3 @@ const PrivacyPolicy = () => {
 };
 
 export default PrivacyPolicy;
- bitumen
