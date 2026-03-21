@@ -13,7 +13,7 @@ export const useSettings = () => {
 
     const fetchSettings = async () => {
         try {
-            const resp = await api.get('/preferences/');
+            const resp = await api.get('/preferences/current/');
             setSettings(resp.data);
             applyTheme(resp.data.dark_mode);
         } catch (err) {
@@ -25,7 +25,7 @@ export const useSettings = () => {
 
     const updateSettings = async (newSettings) => {
         try {
-            const resp = await api.patch('/preferences/', newSettings);
+            const resp = await api.patch('/preferences/current/', newSettings);
             setSettings(resp.data);
             if (newSettings.dark_mode !== undefined) {
                 applyTheme(resp.data.dark_mode);
