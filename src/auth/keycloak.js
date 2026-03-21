@@ -16,8 +16,13 @@ export const initKeycloak = () => {
   });
 };
 
-export const login = () => keycloak.login();
-export const logout = () => keycloak.logout();
+export const login = () => keycloak.login({ 
+  redirectUri: window.location.origin + '/callback' 
+});
+
+export const logout = () => keycloak.logout({ 
+  redirectUri: window.location.origin 
+});
 export const getToken = () => keycloak.token;
 export const isAuthenticated = () => keycloak.authenticated;
 export const getUserProfile = () => keycloak.loadUserProfile();

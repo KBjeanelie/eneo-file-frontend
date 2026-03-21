@@ -15,7 +15,7 @@ import {
   Smartphone
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import keycloak from '../auth/keycloak';
+import keycloak, { login } from '../auth/keycloak';
 
 const LandingPage = () => {
   const navigate = useNavigate();
@@ -24,7 +24,7 @@ const LandingPage = () => {
     if (keycloak.authenticated) {
       navigate('/dashboard');
     } else {
-      keycloak.login();
+      login();
     }
   };
 
