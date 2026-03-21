@@ -1,24 +1,24 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Outfit', sans-serif;
   line-height: 1.5;
   font-weight: 400;
-  background-color: #f9fafb;
+  background-color: #F8F9FA;
+  --eneo-violet: #6B21A8;
+  --eneo-gold: #EAB308;
+  --drive-blue: #1A73E8;
+  --drive-gray: #5F6368;
 }
 
 body {
   margin: 0;
-  display: flex;
-  place-content: center;
-  min-width: 320px;
   min-height: 100vh;
-}
-
-#root {
-  width: 100%;
+  color: #202124;
 }
 
 .eneo-gradient {
@@ -27,6 +27,33 @@ body {
 
 .glass {
   background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
+
+.drive-btn-shadow {
+  box-shadow: 0 1px 2px 0 rgba(60,64,67,0.302), 0 1px 3px 1px rgba(60,64,67,0.149);
+}
+
+.drive-shadow-sm {
+  box-shadow: 0 1px 2px 0 rgba(60,64,67,.3), 0 1px 3px 1px rgba(60,64,67,.15);
+}
+
+/* Custom scrollbar for a cleaner look */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #E8EAED;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #DADCE0;
+}
+
