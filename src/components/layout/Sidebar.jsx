@@ -1,27 +1,35 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import { 
   Plus, 
   Files, 
-  Trash2, 
   Clock, 
-  Star, 
   Cloud, 
   HardDrive 
 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useFiles } from '../../hooks/useFiles';
+import { formatBytes } from '../../utils/format';
 
 const Sidebar = ({ onNewFile }) => {
+  const { quota, fetchQuota } = useFiles();
+
+  useEffect(() => {
+    fetchQuota();
+  }, [fetchQuota]);
+
   const menuItems = [
     { icon: <Files size={20} />, label: 'Mes Fichiers', path: '/dashboard' },
-    { icon: <Clock size={20} />, label: 'Récents', path: '#', disabled: true },
-    { icon: <Star size={20} />, label: 'Favoris', path: '#', disabled: true },
-    { icon: <Trash2 size={20} />, label: 'Corbeille', path: '#', disabled: true },
+    { icon: <Clock size={20} />, label: 'Récents', path: '/recent' },
+    { icon: <HardDrive size={20} />, label: 'Espace de Stockage', path: '/storage' },
   ];
+
+  const storageUsed = quota?.total_uploaded_size || 0;
+  const storageLimit = 1 * 1024 * 1024 * 1024; // 1 GB
+  const storagePercent = Math.min(Math.round((storageUsed / storageLimit) * 100), 100);
 
   return (
     <aside className="w-64 flex-shrink-0 bg-white border-r border-slate-100 flex flex-col pt-4 overflow-y-auto">
-      {/* Search Bar Placeholder for Mobile / Small desktops if needed */}
       <div className="px-4 mb-6">
         <motion.button 
           whileHover={{ scale: 1.02, boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)" }}
@@ -36,57 +44,47 @@ const Sidebar = ({ onNewFile }) => {
 
       <nav className="flex-1 space-y-1 px-3">
         {menuItems.map((item) => (
-          item.disabled ? (
-            <div 
-              key={item.label}
-              className="flex items-center space-x-4 px-4 py-2.5 rounded-full text-slate-400 cursor-not-allowed opacity-50"
-            >
-              {item.icon}
-              <span className="text-sm font-medium">{item.label}</span>
-            </div>
-          ) : (
-            <NavLink
-              key={item.label}
-              to={item.path}
-              className={({ isActive }) => `
-                flex items-center space-x-4 px-4 py-2.5 rounded-full transition-all duration-200
-                ${isActive 
-                  ? 'bg-violet-50 text-eneo-violet font-bold' 
-                  : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}
-              `}
-            >
-              {item.icon}
-              <span className="text-sm">{item.label}</span>
-            </NavLink>
-          )
+          <NavLink
+            key={item.label}
+            to={item.path}
+            className={({ isActive }) => `
+              flex items-center space-x-4 px-4 py-2.5 rounded-full transition-all duration-200
+              ${isActive 
+                ? 'bg-violet-50 text-eneo-violet font-bold' 
+                : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}
+            `}
+          >
+            {item.icon}
+            <span className="text-sm">{item.label}</span>
+          </NavLink>
         ))}
       </nav>
 
       <div className="p-6 border-t border-slate-50 space-y-4">
-        <div className="space-y-1.5">
+        <div className="space-y-1.5 cursor-pointer group" onClick={() => window.location.href = '/storage'}>
           <div className="flex items-center justify-between text-[11px] font-bold text-slate-400 uppercase tracking-widest px-1">
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 group-hover:text-eneo-violet transition-colors">
               <Cloud className="w-3 h-3" />
               <span>Stockage</span>
             </div>
-            <span>65%</span>
+            <span>{storagePercent}%</span>
           </div>
           <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
             <motion.div 
                initial={{ width: 0 }}
-               animate={{ width: '65%' }}
+               animate={{ width: `${storagePercent}%` }}
                transition={{ duration: 1, ease: "easeOut" }}
-               className="h-full bg-eneo-violet rounded-full"
+               className={`h-full rounded-full ${storagePercent > 90 ? 'bg-rose-500' : 'bg-eneo-violet'}`}
             />
           </div>
           <p className="text-[10px] text-slate-400 px-1 font-medium italic">
-            650 Mo sur 1 Go utilisés
+            {formatBytes(storageUsed)} sur 1 Go utilisés
           </p>
         </div>
         
-        <button className="w-full py-2 border border-eneo-violet/20 rounded-lg text-[10px] font-black uppercase tracking-widest text-eneo-violet hover:bg-violet-50 transition-colors">
-          Acheter plus
-        </button>
+        <NavLink to="/storage" className="w-full py-2 block text-center border border-eneo-violet/20 rounded-lg text-[10px] font-black uppercase tracking-widest text-eneo-violet hover:bg-violet-50 transition-colors">
+          Gérer le stockage
+        </NavLink>
       </div>
     </aside>
   );

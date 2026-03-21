@@ -4,7 +4,13 @@ import Dashboard from './pages/Dashboard';
 import LoginCallback from './pages/Callback';
 import DownloadPage from './pages/Download';
 import FileDetailPage from './pages/FileDetail';
+import RecentFiles from './pages/RecentFiles';
+import StorageSpace from './pages/StorageSpace';
+import HelpCenter from './pages/HelpCenter';
+import Settings from './pages/Settings';
+import Layout from './components/layout/Layout';
 import keycloak from './auth/keycloak';
+import { useSettings } from './hooks/useSettings';
 
 const ProtectedRoute = ({ children }) => {
   if (!keycloak.authenticated) {
@@ -14,6 +20,12 @@ const ProtectedRoute = ({ children }) => {
 };
 
 function App() {
+  const { settings, loading } = useSettings();
+
+  if (!loading && settings.dark_mode) {
+    document.documentElement.classList.add('dark');
+  }
+
   return (
     <Router>
       <Routes>
@@ -21,17 +33,15 @@ function App() {
         <Route path="/d/:access_token" element={<DownloadPage />} />
         <Route path="/callback" element={<LoginCallback />} />
         
-        {/* Private Routes */}
-        <Route path="/dashboard" element={
-          <ProtectedRoute>
-            <Dashboard />
-          </ProtectedRoute>
-        } />
-        <Route path="/files/:id" element={
-          <ProtectedRoute>
-            <FileDetailPage />
-          </ProtectedRoute>
-        } />
+        {/* Private Routes with Shared Layout */}
+        <Route element={<ProtectedRoute children={<Layout />} />}>
+           <Route path="/dashboard" element={<Dashboard />} />
+           <Route path="/files/:id" element={<FileDetailPage />} />
+           <Route path="/recent" element={<RecentFiles />} />
+           <Route path="/storage" element={<StorageSpace />} />
+           <Route path="/help" element={<HelpCenter />} /> {/* Added HelpCenter route */}
+           <Route path="/settings" element={<Settings />} />
+        </Route>
 
         {/* Redirects */}
         <Route path="/" element={<Navigate to="/dashboard" replace />} />

@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useFiles } from '../hooks/useFiles';
-import Header from '../components/layout/Header';
-import Sidebar from '../components/layout/Sidebar';
 import { 
   ArrowLeft, 
   Trash2, 
@@ -19,7 +17,8 @@ import {
   X,
   ExternalLink,
   ChevronRight,
-  Settings
+  Settings,
+  Copy
 } from 'lucide-react';
 import api from '../api/client';
 import { formatBytes, formatDate } from '../utils/format';
@@ -108,311 +107,235 @@ const FileDetailPage = () => {
   }
 
   return (
-    <div className="h-screen bg-white flex flex-col overflow-hidden text-slate-700">
-      <Header user={keycloak.tokenParsed} />
-      
-      <div className="flex flex-1 overflow-hidden">
-        <Sidebar onNewFile={() => navigate('/dashboard')} />
-
-        <main className="flex-1 overflow-y-auto bg-slate-50/50 p-4 md:p-8">
-          <div className="max-w-6xl mx-auto">
-            {/* Breadcrumbs */}
-            <div className="flex items-center space-x-2 text-xs font-bold text-slate-400 mb-6 uppercase tracking-widest">
-               <button onClick={() => navigate('/dashboard')} className="hover:text-eneo-violet transition-colors">Mes Fichiers</button>
-               <ChevronRight size={12} />
-               <span className="text-slate-600 truncate max-w-[200px]">{file.title || file.original_name}</span>
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              {/* Left Column: Preview & Stats */}
-              <div className="lg:col-span-2 space-y-6">
-                
-                {/* Main Info Card */}
-                <motion.section 
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="bg-white rounded-3xl p-6 md:p-8 drive-shadow-sm border border-slate-100"
-                >
-                  <div className="flex flex-col md:flex-row md:items-start space-y-4 md:space-y-0 md:space-x-8">
-                    <div className="p-6 bg-slate-50 text-slate-400 rounded-3xl drive-shadow-sm self-start">
-                        <FileTypeIcon mimeType={file.mime_type} className="w-14 h-14" />
-                    </div>
-                    
-                    <div className="flex-1 space-y-4">
-                        <div className="flex justify-between items-start">
-                            <div className="flex-1 min-w-0">
-                                {editing ? (
-                                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-3">
-                                    <input 
-                                      type="text" 
-                                      value={formData.title} 
-                                      onChange={(e) => setFormData({...formData, title: e.target.value})}
-                                      className="w-full text-2xl font-bold text-slate-800 border-b-2 border-eneo-violet focus:outline-none bg-slate-50 px-3 py-2 rounded-t-xl"
-                                      autoFocus
-                                    />
-                                    <div className="flex items-center space-x-3">
-                                      <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Limite téléchargements :</span>
-                                      <input 
-                                        type="number" 
-                                        value={formData.max_downloads} 
-                                        onChange={(e) => setFormData({...formData, max_downloads: parseInt(e.target.value)})}
-                                        className="w-20 text-sm font-bold text-slate-700 bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 focus:border-eneo-violet outline-none"
-                                      />
-                                    </div>
-                                  </motion.div>
-                                ) : (
-                                  <h1 className="text-3xl font-bold text-slate-900 truncate" title={file.title}>{file.title}</h1>
-                                )}
-                                <p className="text-xs text-slate-400 font-bold uppercase tracking-widest mt-1 opacity-60 italic">{file.original_name}</p>
-                            </div>
-                            
-                            <div className="flex items-center space-x-2 ml-4">
-                               <AnimatePresence mode="wait">
-                                  {!editing ? (
-                                    <motion.button 
-                                      key="edit"
-                                      initial={{ opacity: 0, scale: 0.8 }}
-                                      animate={{ opacity: 1, scale: 1 }}
-                                      exit={{ opacity: 0, scale: 0.8 }}
-                                      onClick={() => setEditing(true)} 
-                                      className="p-3 text-slate-400 hover:text-eneo-violet hover:bg-violet-50 rounded-2xl transition-all drive-shadow-sm border border-slate-100 bg-white"
-                                    >
-                                       <Edit3 size={20} />
-                                    </motion.button>
-                                  ) : (
-                                    <motion.div 
-                                      key="actions"
-                                      initial={{ opacity: 0, x: 20 }}
-                                      animate={{ opacity: 1, x: 0 }}
-                                      exit={{ opacity: 0, x: 20 }}
-                                      className="flex space-x-2"
-                                    >
-                                      <button 
-                                        onClick={() => setEditing(false)} 
-                                        className="p-2.5 text-slate-400 hover:bg-slate-100 rounded-xl transition-all text-[10px] font-black uppercase tracking-widest px-4 border border-slate-100"
-                                      >
-                                        Annuler
-                                      </button>
-                                      <button 
-                                        onClick={handleUpdate} 
-                                        className="p-2.5 bg-eneo-violet text-white hover:shadow-lg hover:shadow-violet-200 rounded-xl transition-all flex items-center space-x-2 px-5"
-                                      >
-                                        <Save size={16} />
-                                        <span className="text-[10px] font-black uppercase tracking-widest">Sauver</span>
-                                      </button>
-                                    </motion.div>
-                                  )}
-                               </AnimatePresence>
-                            </div>
-                        </div>
-
-                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 pt-4">
-                          <div className="space-y-1">
-                            <div className="flex items-center space-x-1.5 text-slate-400">
-                              <HardDrive size={14} />
-                              <span className="text-[10px] font-black uppercase tracking-widest">Taille</span>
-                            </div>
-                            <p className="text-sm font-bold text-slate-700">{formatBytes(file.file_size)}</p>
-                          </div>
-                          <div className="space-y-1">
-                            <div className="flex items-center space-x-1.5 text-slate-400">
-                              <Clock size={14} />
-                              <span className="text-[10px] font-black uppercase tracking-widest">Expiration</span>
-                            </div>
-                            <p className="text-sm font-bold text-slate-700">{formatDate(file.expires_at)}</p>
-                          </div>
-                          <div className="space-y-1">
-                            <div className="flex items-center space-x-1.5 text-slate-400">
-                              <Download size={14} />
-                              <span className="text-[10px] font-black uppercase tracking-widest">Succès</span>
-                            </div>
-                            <p className="text-sm font-bold text-slate-700">{file.download_count} / {file.max_downloads}</p>
-                          </div>
-                        </div>
-                    </div>
-                  </div>
-                </motion.section>
-
-                {/* Preview Section */}
-                <motion.section 
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.1 }}
-                  className="bg-white rounded-3xl p-6 md:p-8 drive-shadow-sm border border-slate-100"
-                >
-                  <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Aperçu de Sécurité</h2>
-                    <div className="px-3 py-1 bg-slate-50 rounded-full text-[10px] font-bold text-slate-400 border border-slate-100 italic">Pre-visualisation</div>
-                  </div>
-                  <div className="rounded-2xl overflow-hidden border border-slate-50 bg-slate-50/30">
-                    <FilePreview 
-                      fileUrl={file.file_url} 
-                      mimeType={file.mime_type} 
-                      fileName={file.original_name} 
-                    />
-                  </div>
-                </motion.section>
-
-                {/* History Section */}
-                <motion.section 
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2 }}
-                  className="bg-white rounded-3xl p-6 md:p-8 drive-shadow-sm border border-slate-100"
-                >
-                  <div className="flex items-center justify-between mb-8">
-                     <h2 className="text-xl font-bold text-slate-800">Historique d'accès</h2>
-                     <div className="flex items-center space-x-2 text-eneo-gold">
-                        <BarChart3 size={18} />
-                        <span className="text-xs font-bold uppercase tracking-widest">{stats.length} clics</span>
-                     </div>
-                  </div>
-                  
-                  {stats.length > 0 ? (
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-left">
-                            <thead>
-                                <tr className="text-[10px] font-black text-slate-300 uppercase tracking-widest border-b border-slate-50">
-                                    <th className="pb-4 pt-0">Adresse IP</th>
-                                    <th className="pb-4 pt-0">Date & Heure</th>
-                                    <th className="pb-4 pt-0 text-right">Appareil / Navigateur</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-slate-50">
-                                {stats.map((stat, idx) => (
-                                    <tr key={idx} className="group hover:bg-slate-50/50 transition-colors">
-                                        <td className="py-4 text-xs font-bold text-slate-600 flex items-center space-x-2">
-                                            <Globe size={14} className="text-slate-300 group-hover:text-eneo-violet transition-colors" />
-                                            <span>{stat.ip_address}</span>
-                                        </td>
-                                        <td className="py-4 text-[11px] text-slate-400">{formatDate(stat.downloaded_at)}</td>
-                                        <td className="py-4 text-[10px] text-slate-400 text-right max-w-[150px] truncate italic" title={stat.user_agent}>
-                                            {stat.user_agent}
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                  ) : (
-                    <div className="text-center py-16 bg-slate-50/50 rounded-3xl border border-dashed border-slate-200">
-                        <div className="bg-white w-12 h-12 rounded-full flex items-center justify-center drive-shadow-sm mx-auto mb-4">
-                           <Globe size={20} className="text-slate-300" />
-                        </div>
-                        <p className="text-slate-400 text-sm font-bold">Aucune activité pour le moment</p>
-                    </div>
-                  )}
-                </motion.section>
-              </div>
-
-              {/* Right Column: Actions & Link */}
-              <div className="space-y-6">
-                
-                {/* Link Sharing Card */}
-                <motion.section 
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  className={`rounded-[2rem] p-8 text-white shadow-2xl transition-all duration-700 relative overflow-hidden ${
-                    file.is_active ? 'eneo-gradient' : 'bg-slate-400'
-                  }`}
-                >
-                    {/* Decorative Background Elements */}
-                    <div className="absolute top-0 right-0 -mr-8 -mt-8 w-32 h-32 bg-white/10 rounded-full blur-2xl" />
-                    <div className="absolute bottom-0 left-0 -ml-8 -mb-8 w-24 h-24 bg-black/10 rounded-full blur-xl" />
-
-                    <div className="relative z-10 space-y-6">
-                        <div className="flex items-center justify-between">
-                            <h3 className="font-black text-[10px] uppercase tracking-[0.3em] opacity-60">
-                              {file.is_active ? 'Lien de partage' : 'Accès Suspendu'}
-                            </h3>
-                            <div className={`p-2 rounded-xl bg-white/20 backdrop-blur-md border border-white/20`}>
-                               {file.is_active ? <Layout size={18} /> : <X size={18} />}
-                            </div>
-                        </div>
-                        
-                        {file.is_active ? (
-                          <>
-                            <div className="bg-white/10 backdrop-blur-md p-5 rounded-[1.5rem] border border-white/10 break-all text-[11px] font-mono shadow-inner text-violet-100 flex items-center justify-between group">
-                                <span className="truncate flex-1 pr-2">{file.download_url}</span>
-                                <ExternalLink size={14} className="opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
-                            </div>
-                            <motion.button 
-                                whileHover={{ scale: 1.02 }}
-                                whileTap={{ scale: 0.98 }}
-                                onClick={() => {
-                                   navigator.clipboard.writeText(file.download_url);
-                                   // Simple internal feedback toast can be added
-                                }}
-                                className="w-full bg-eneo-gold text-eneo-violet font-black py-4 rounded-2xl shadow-xl hover:shadow-eneo-gold/20 transition-all text-xs uppercase tracking-[0.2em]"
-                            >
-                                Copier le lien
-                            </motion.button>
-                          </>
-                        ) : (
-                          <div className="bg-black/10 p-6 rounded-[1.5rem] border border-white/5 text-center space-y-3">
-                            <ShieldOff size={32} className="mx-auto opacity-40" />
-                            <p className="text-xs font-bold leading-relaxed px-2 opacity-80">
-                              Ce lien est temporairement inactif. Personne ne peut télécharger le fichier actuellement.
-                            </p>
-                          </div>
-                        )}
-                    </div>
-                </motion.section>
-
-                {/* Actions Sidebar Card */}
-                <motion.section 
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.1 }}
-                  className="bg-white rounded-3xl p-6 md:p-8 drive-shadow-sm border border-slate-100 space-y-6"
-                >
-                    <h3 className="text-[10px] font-black text-slate-300 uppercase tracking-widest border-b border-slate-50 pb-4 flex items-center space-x-2">
-                       <Settings size={12} />
-                       <span>Contrôle d'accès</span>
-                    </h3>
-                    
-                    <div className="space-y-3">
-                        <button 
-                            onClick={handleToggleActive}
-                            className={`w-full flex items-center justify-between p-4 rounded-2xl transition-all group ${
-                              file.is_active 
-                                ? 'bg-slate-50 hover:bg-rose-50 hover:text-rose-600' 
-                                : 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200'
-                            }`}
-                        >
-                            <div className="flex items-center space-x-3">
-                                {file.is_active ? (
-                                  <>
-                                    <ShieldOff className="w-5 h-5 text-slate-400 group-hover:text-rose-500 transition-colors" />
-                                    <span className="text-sm font-bold">Désactiver le lien</span>
-                                  </>
-                                ) : (
-                                  <>
-                                    <Shield className="w-5 h-5 text-emerald-600" />
-                                    <span className="text-sm font-black uppercase tracking-tighter">Réactiver</span>
-                                  </>
-                                )}
-                            </div>
-                        </button>
-
-                        <button 
-                            onClick={handleDelete}
-                            className="w-full flex items-center justify-between p-4 rounded-2xl bg-slate-50 hover:bg-rose-600 hover:text-white transition-all group"
-                        >
-                            <div className="flex items-center space-x-3">
-                                <Trash2 className="w-5 h-5 text-slate-400 group-hover:text-white transition-colors" />
-                                <span className="text-sm font-bold">Supprimer</span>
-                            </div>
-                        </button>
-                    </div>
-                </motion.section>
-
-              </div>
-            </div>
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="space-y-6 animate-in fade-in duration-700"
+    >
+      {/* File Header Section */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-8">
+        <div className="flex items-center space-x-4">
+          <Link to="/dashboard" className="p-2 hover:bg-slate-100 rounded-full text-slate-400 transition-colors">
+            <ArrowLeft size={20} />
+          </Link>
+          <div className="p-3 bg-slate-50 rounded-2xl text-eneo-violet">
+            <FileTypeIcon mimeType={file.mime_type} className="w-8 h-8" />
           </div>
-        </main>
+          <div>
+            <h1 className="text-2xl font-black text-slate-800 tracking-tight">{file.title || file.original_name}</h1>
+            <p className="text-xs text-slate-400 font-bold uppercase tracking-widest mt-1">
+              Partagé le {formatDate(file.created_at)}
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center space-x-3">
+          <button 
+            onClick={() => setEditing(true)}
+            className="px-5 py-2.5 bg-white border border-slate-200 text-slate-600 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-slate-50 transition-all drive-shadow-sm flex items-center space-x-2"
+          >
+            <Edit3 size={14} />
+            <span>Modifier</span>
+          </button>
+          <button 
+            onClick={() => window.open(file.file_url, '_blank')}
+            className="px-5 py-2.5 bg-eneo-violet text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-violet-800 transition-all shadow-lg shadow-eneo-violet/20 flex items-center space-x-2"
+          >
+            <Download size={14} />
+            <span>Télécharger</span>
+          </button>
+        </div>
       </div>
-    </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Left Column: Preview & History */}
+        <div className="lg:col-span-2 space-y-8">
+          {/* Main Preview Card */}
+          <div className="bg-white rounded-[2.5rem] border border-slate-100 drive-shadow-sm p-2 overflow-hidden">
+             <div className="bg-slate-50 rounded-[2rem] overflow-hidden min-h-[400px] flex items-center justify-center">
+                <FilePreview fileUrl={file.file_url} mimeType={file.mime_type} fileName={file.original_name} />
+             </div>
+          </div>
+
+          {/* History Section */}
+          <div className="bg-white rounded-[2.5rem] border border-slate-100 drive-shadow-sm overflow-hidden">
+             <div className="p-8 border-b border-slate-50 flex items-center justify-between">
+                <h2 className="text-lg font-bold text-slate-800">Historique des accès</h2>
+                <div className="px-3 py-1 bg-slate-100 rounded-full text-[10px] font-black uppercase tracking-widest text-slate-500">
+                   {stats.length} téléchargements
+                </div>
+             </div>
+             <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse">
+                   <thead>
+                      <tr className="bg-slate-50/50">
+                         <th className="px-8 py-4 text-[10px] font-black uppercase tracking-widest text-slate-400">Date et Heure</th>
+                         <th className="px-8 py-4 text-[10px] font-black uppercase tracking-widest text-slate-400">Adresse IP</th>
+                         <th className="px-8 py-4 text-[10px] font-black uppercase tracking-widest text-slate-400">Navigateur</th>
+                      </tr>
+                   </thead>
+                   <tbody className="divide-y divide-slate-50">
+                      {stats.map((stat, i) => (
+                         <tr key={i} className="hover:bg-slate-50/50 transition-colors">
+                            <td className="px-8 py-4 text-xs font-medium text-slate-600">{formatDate(stat.downloaded_at)}</td>
+                            <td className="px-8 py-4 text-xs font-bold text-slate-800 font-mono">{stat.ip_address}</td>
+                            <td className="px-8 py-4 text-[10px] text-slate-400 truncate max-w-[200px]">{stat.user_agent}</td>
+                         </tr>
+                      ))}
+                      {stats.length === 0 && (
+                        <tr>
+                           <td colSpan="3" className="px-8 py-12 text-center text-slate-400 text-sm italic">Aucun téléchargement enregistré pour le moment.</td>
+                        </tr>
+                      )}
+                   </tbody>
+                </table>
+             </div>
+          </div>
+        </div>
+
+        {/* Right Column: Properties & Link Sharing */}
+        <div className="space-y-8">
+          {/* Status Card */}
+          <div className="bg-white rounded-[2.5rem] border border-slate-100 drive-shadow-sm p-8 space-y-6">
+             <div className="flex items-center justify-between">
+                <h3 className="text-sm font-black uppercase tracking-[0.2em] text-slate-400">Statut du lien</h3>
+                <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border ${file.is_active ? 'bg-emerald-50 text-emerald-500 border-emerald-100' : 'bg-rose-50 text-rose-500 border-rose-100'}`}>
+                   {file.is_active ? 'Actif' : 'Inactif'}
+                </span>
+             </div>
+
+             <div className="p-6 bg-slate-50 rounded-2xl border border-slate-100 flex items-center justify-between group">
+                <div className="flex items-center space-x-4">
+                   <div className={`p-3 rounded-xl transition-colors ${file.is_active ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-rose-500 text-white shadow-lg shadow-rose-500/20'}`}>
+                      {file.is_active ? <Shield size={20} /> : <ShieldOff size={20} />}
+                   </div>
+                   <div>
+                      <p className="text-xs font-bold text-slate-700">Sécurité du lien</p>
+                      <p className="text-[10px] text-slate-400">{file.is_active ? 'Visible par tous' : 'Accès bloqué'}</p>
+                   </div>
+                </div>
+                <button 
+                  onClick={handleToggleActive}
+                  className={`w-12 h-6 rounded-full relative transition-colors duration-300 ${file.is_active ? 'bg-emerald-500' : 'bg-slate-300'}`}
+                >
+                  <motion.div 
+                    animate={{ x: file.is_active ? 26 : 2 }}
+                    className="absolute top-1 left-0 w-4 h-4 bg-white rounded-full shadow-sm"
+                  />
+                </button>
+             </div>
+
+             <div className="space-y-4 pt-2">
+                <div className="flex items-center justify-between text-xs px-1">
+                   <span className="text-slate-400 font-bold uppercase tracking-widest">Lien de partage</span>
+                   <button onClick={() => {
+                      navigator.clipboard.writeText(file.download_url);
+                      alert("Lien copié !");
+                   }} className="text-eneo-violet font-black uppercase tracking-widest hover:text-violet-800 flex items-center space-x-1">
+                      <Copy size={12} />
+                      <span>Copier</span>
+                   </button>
+                </div>
+                <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100 break-all font-mono text-[10px] text-slate-500 leading-relaxed shadow-inner">
+                   {file.download_url}
+                </div>
+             </div>
+          </div>
+
+          {/* Details Card */}
+          <div className="bg-white rounded-[2.5rem] border border-slate-100 drive-shadow-sm p-8 space-y-6">
+             <h3 className="text-sm font-black uppercase tracking-[0.2em] text-slate-400">Détails techniques</h3>
+             <div className="space-y-4">
+                <div className="flex items-center justify-between p-4 bg-slate-50/50 rounded-2xl">
+                   <div className="flex items-center space-x-3 text-slate-500">
+                      <HardDrive size={16} />
+                      <span className="text-xs font-bold">Taille</span>
+                   </div>
+                   <span className="text-xs font-black text-slate-700">{formatBytes(file.file_size)}</span>
+                </div>
+                <div className="flex items-center justify-between p-4 bg-slate-50/50 rounded-2xl">
+                   <div className="flex items-center space-x-3 text-slate-500">
+                      <Download size={16} />
+                      <span className="text-xs font-bold">Téléchargements</span>
+                   </div>
+                   <span className="text-xs font-black text-slate-700">{file.download_count} / {file.max_downloads || '∞'}</span>
+                </div>
+                <div className="flex items-center justify-between p-4 bg-slate-50/50 rounded-2xl">
+                   <div className="flex items-center space-x-3 text-slate-500">
+                      <Clock size={16} />
+                      <span className="text-xs font-bold">Expire le</span>
+                   </div>
+                   <span className="text-xs font-black text-slate-700">{formatDate(file.expires_at)}</span>
+                </div>
+             </div>
+          </div>
+
+          <button 
+             onClick={handleDelete}
+             className="w-full py-4 bg-rose-50 text-rose-500 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-rose-500 hover:text-white transition-all border border-rose-100 flex items-center justify-center space-x-3"
+          >
+             <Trash2 size={16} />
+             <span>Supprimer définitivement</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Edit Modal */}
+      <AnimatePresence>
+        {editing && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4"
+          >
+            <motion.div 
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              className="bg-white rounded-[3rem] p-10 max-w-lg w-full shadow-2xl space-y-8"
+            >
+              <div className="flex items-center justify-between">
+                 <h2 className="text-2xl font-black text-slate-800 tracking-tight">Modifier le fichier</h2>
+                 <button onClick={() => setEditing(false)} className="p-2 hover:bg-slate-100 rounded-full text-slate-400">×</button>
+              </div>
+
+              <div className="space-y-6">
+                 <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-1">Titre du fichier</label>
+                    <input 
+                      type="text" 
+                      value={formData.title}
+                      onChange={(e) => setFormData({...formData, title: e.target.value})}
+                      className="w-full bg-slate-100 border-transparent rounded-2xl py-4 px-6 focus:bg-white focus:ring-4 focus:ring-eneo-violet/10 focus:border-eneo-violet/20 transition-all font-bold text-slate-700"
+                    />
+                 </div>
+                 <div className="grid grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                       <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-1">Téléchargements Max</label>
+                       <input 
+                         type="number" 
+                         value={formData.max_downloads}
+                         onChange={(e) => setFormData({...formData, max_downloads: parseInt(e.target.value) || 0})}
+                         className="w-full bg-slate-100 border-transparent rounded-2xl py-4 px-6 focus:bg-white focus:ring-4 focus:ring-eneo-violet/10 focus:border-eneo-violet/20 transition-all font-bold text-slate-700"
+                       />
+                    </div>
+                    {/* Add expiration update if needed, but for now just title and max_downloads as in previous logic */}
+                 </div>
+              </div>
+
+              <div className="flex space-x-4 pt-4">
+                 <button onClick={() => setEditing(false)} className="flex-1 py-4 bg-slate-100 text-slate-500 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-200 transition-all">
+                    Annuler
+                 </button>
+                 <button onClick={handleUpdate} className="flex-1 py-4 bg-eneo-violet text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-violet-800 transition-all shadow-xl shadow-eneo-violet/20">
+                    Sauvegarder
+                 </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
   );
 };
 

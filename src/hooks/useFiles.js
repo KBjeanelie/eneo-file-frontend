@@ -3,6 +3,8 @@ import api from '../api/client';
 
 export const useFiles = () => {
   const [files, setFiles] = useState([]);
+  const [recentFiles, setRecentFiles] = useState([]);
+  const [quota, setQuota] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -11,7 +13,6 @@ export const useFiles = () => {
     setLoading(true);
     try {
       const response = await api.get('/files/');
-      // Handle potential pagination
       const data = response.data.results !== undefined ? response.data.results : response.data;
       setFiles(Array.isArray(data) ? data : []);
       setError(null);
@@ -19,6 +20,24 @@ export const useFiles = () => {
       setError("Impossible de charger les fichiers.");
     } finally {
       setLoading(false);
+    }
+  }, []);
+
+  const fetchRecentFiles = useCallback(async () => {
+    try {
+      const response = await api.get('/files/recent/');
+      setRecentFiles(response.data);
+    } catch (err) {
+      console.error("Erreur lors de la récupération des fichiers récents", err);
+    }
+  }, []);
+
+  const fetchQuota = useCallback(async () => {
+    try {
+      const response = await api.get('/files/quota/');
+      setQuota(response.data);
+    } catch (err) {
+      console.error("Erreur lors de la récupération du quota", err);
     }
   }, []);
 
@@ -39,6 +58,8 @@ export const useFiles = () => {
         }
       });
       setFiles(prev => [response.data, ...prev]);
+      // Update quota after upload
+      fetchQuota();
       return response.data;
     } catch (err) {
       const msg = err.response?.data?.error || "Erreur lors de l'upload.";
@@ -53,6 +74,8 @@ export const useFiles = () => {
     try {
       await api.delete(`/files/${id}/`);
       setFiles(prev => prev.filter(f => f.id !== id));
+      // Update quota after delete
+      fetchQuota();
     } catch (err) {
       setError("Erreur lors de la suppression.");
     }
@@ -60,10 +83,14 @@ export const useFiles = () => {
 
   return {
     files,
+    recentFiles,
+    quota,
     loading,
     error,
     uploadProgress,
     fetchFiles,
+    fetchRecentFiles,
+    fetchQuota,
     uploadFile,
     deleteFile,
     setError

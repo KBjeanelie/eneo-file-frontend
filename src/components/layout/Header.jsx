@@ -1,6 +1,7 @@
 import React from 'react';
 import { LogOut, FileText, Search, Settings, HelpCircle, Menu } from 'lucide-react';
 import { logout } from '../../auth/keycloak';
+import { Link } from 'react-router-dom';
 
 const Header = ({ user }) => {
   return (
@@ -37,12 +38,18 @@ const Header = ({ user }) => {
 
         {/* Right: Actions & Profile */}
         <div className="flex items-center space-x-1 min-w-[240px] justify-end">
-          <button className="p-2.5 hover:bg-slate-100 rounded-full text-slate-500 transition-colors hidden sm:block">
+          <Link 
+            to="/help"
+            className="p-2.5 hover:bg-slate-100 rounded-full text-slate-500 transition-colors hidden sm:block"
+          >
             <HelpCircle className="w-5 h-5" />
-          </button>
-          <button className="p-2.5 hover:bg-slate-100 rounded-full text-slate-500 transition-colors hidden sm:block">
-            <Settings className="w-5 h-5" />
-          </button>
+          </Link>
+          <Link to="/settings" className="p-2 hover:bg-slate-100 rounded-full text-slate-600 transition group relative">
+            <Settings size={20} className="group-hover:rotate-45 transition-transform duration-300" />
+            <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition pointer-events-none whitespace-nowrap">
+              Paramètres
+            </span>
+          </Link>
           
           {user && (
             <div className="flex items-center ml-2 pl-4 border-l border-slate-200">
