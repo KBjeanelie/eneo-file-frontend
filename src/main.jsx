@@ -19,7 +19,7 @@ initKeycloak().then((authenticated) => {
   if (!authenticated) {
     window.location.href = '#'; // Let keycloak.init handle redirect based on check-sso
     // If not authenticated, we could trigger login, but init check-sso + ProtectedRoute is better
-    if (!window.location.pathname.startsWith('/d/')) {
+    if (!window.location.pathname.startsWith('/d/') && window.location.pathname !== '/') {
         import('./auth/keycloak').then(m => m.login());
     } else {
         root.render(<App />);

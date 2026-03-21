@@ -107,7 +107,7 @@ const LandingPage = () => {
             <div className="absolute inset-0 bg-eneo-gradient blur-[80px] opacity-20 rounded-full" />
             <div className="relative bg-white rounded-[2.5rem] border border-slate-100 shadow-2xl overflow-hidden p-2">
                <img 
-                 src="/home/walter/.gemini/antigravity/brain/1f1bc7f1-35bd-42ef-89b8-814329a4444c/media__1774132328552.png" 
+                 src="/assets/showcase-storage.png" 
                  alt="Interface Eneo File" 
                  className="rounded-[2rem] shadow-sm w-full h-auto"
                />
@@ -154,7 +154,7 @@ const LandingPage = () => {
              <div className="order-2 lg:order-1 relative">
                 <div className="absolute -inset-4 bg-slate-100 rounded-[3rem] -z-10 rotate-2" />
                 <img 
-                  src="/home/walter/.gemini/antigravity/brain/1f1bc7f1-35bd-42ef-89b8-814329a4444c/media__1774132295763.png" 
+                  src="/assets/showcase-files.png" 
                   alt="Gestion des fichiers" 
                   className="rounded-[2.5rem] shadow-2xl w-full border border-slate-100"
                 />
@@ -190,7 +190,7 @@ const LandingPage = () => {
                 <p className="text-slate-500 font-medium leading-relaxed">Vos liens sont uniques et protégés. Définissez des dates d'expiration automatiques (3 à 5 jours) pour garantir la confidentialité de vos données.</p>
                 <div className="bg-slate-50 p-6 rounded-3xl border border-slate-100 mt-8">
                    <img 
-                      src="/home/walter/.gemini/antigravity/brain/1f1bc7f1-35bd-42ef-89b8-814329a4444c/media__1774132306719.png" 
+                      src="/assets/showcase-detail.png" 
                       alt="Partage sécurisé" 
                       className="rounded-2xl shadow-sm border border-slate-100"
                    />
@@ -211,7 +211,7 @@ const LandingPage = () => {
                  </div>
                  <div className="mt-4">
                     <img 
-                      src="/home/walter/.gemini/antigravity/brain/1f1bc7f1-35bd-42ef-89b8-814329a4444c/media__1774132349647.png" 
+                      src="/assets/showcase-dark.png" 
                       alt="Mode sombre" 
                       className="rounded-[2.5rem] shadow-2xl border border-white/10"
                     />
