@@ -14,6 +14,7 @@ import {
   BookOpen,
   LifeBuoy
 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const FAQItem = ({ question, answer }) => {
   const [isOpen, setIsOpen] = useState(false);
