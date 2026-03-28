@@ -55,13 +55,13 @@ const Dashboard = () => {
                 </div>
                 <h1 className="text-xl md:text-2xl font-black text-slate-800 tracking-tight">Mes Fichiers</h1>
              </div>
-             <button 
+             {/* <button 
                onClick={onNewFile}
                className="hidden sm:flex items-center space-x-2 bg-eneo-violet text-white px-4 py-2 rounded-xl shadow-lg shadow-eneo-violet/20 hover:bg-violet-800 transition-all font-bold text-xs uppercase tracking-widest"
              >
                <Plus size={14} />
                <span>Nouveau</span>
-             </button>
+             </button> */}
           </div>
          
          <div className="flex items-center justify-between sm:justify-end space-x-3">
