@@ -1,14 +1,15 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { LogOut, FileText, Search, Settings, HelpCircle, Menu, User } from 'lucide-react';
 import { logout } from '../../auth/keycloak';
 import { Link } from 'react-router-dom';
 import AppGrid from './AppGrid';
+import api from '../../api/client';
 
 const Header = ({ onMenuClick }) => {
-  const [profile, setProfile] = React.useState(null);
-  const [avatarError, setAvatarError] = React.useState(false);
+  const [profile, setProfile] = useState(null);
+  const [avatarError, setAvatarError] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const fetchProfile = async () => {
       try {
         const response = await api.get('https://myaccount.auth.eneogroup.site/api/v1/me/');
@@ -17,7 +18,11 @@ const Header = ({ onMenuClick }) => {
         console.error("Could not fetch user profile from Eneo Account", err);
       }
     };
+    
     fetchProfile();
+    // Poll every 30 seconds for automatic sync
+    const interval = setInterval(fetchProfile, 30000);
+    return () => clearInterval(interval);
   }, []);
 
   const userAvatar = profile?.avatar_url || profile?.picture;
