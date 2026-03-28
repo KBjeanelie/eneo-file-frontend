@@ -9,6 +9,24 @@ export const useFiles = () => {
   const [error, setError] = useState(null);
   const [uploadProgress, setUploadProgress] = useState(0);
 
+  const [polling, setPolling] = useState(false);
+
+  // Real-time synchronization: Poll every 3 seconds if not already loading
+  useEffect(() => {
+    let interval;
+    if (polling) {
+      interval = setInterval(() => {
+        if (!loading) {
+          fetchFiles();
+        }
+      }, 3000);
+    }
+    return () => clearInterval(interval);
+  }, [polling, fetchFiles, loading]);
+
+  const startPolling = useCallback(() => setPolling(true), []);
+  const stopPolling = useCallback(() => setPolling(false), []);
+
   const fetchFiles = useCallback(async () => {
     setLoading(true);
     try {
@@ -87,6 +105,27 @@ export const useFiles = () => {
     }
   };
 
+  const regenerateSecretKey = async (id) => {
+    try {
+      const response = await api.post(`/files/${id}/regenerate_secret_key/`);
+      setFiles(prev => prev.map(f => f.id === id ? { ...f, secret_key: response.data.secret_key } : f));
+      return response.data.secret_key;
+    } catch (err) {
+      setError("Erreur lors de la régénération de la clé.");
+      throw err;
+    }
+  };
+
+  const validateSecretKey = async (accessToken, secretKey) => {
+    try {
+      const response = await api.post(`/d/${accessToken}/download/`, { secret_key: secretKey });
+      return response.data.download_url;
+    } catch (err) {
+      const msg = err.response?.data?.error || "Clé invalide.";
+      throw new Error(msg);
+    }
+  };
+
   return {
     files,
     recentFiles,
@@ -94,11 +133,16 @@ export const useFiles = () => {
     loading,
     error,
     uploadProgress,
+    polling,
     fetchFiles,
     fetchRecentFiles,
     fetchQuota,
     uploadFile,
     deleteFile,
+    regenerateSecretKey,
+    validateSecretKey,
+    startPolling,
+    stopPolling,
     setError
   };
 };

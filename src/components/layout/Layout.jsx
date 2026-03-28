@@ -10,8 +10,15 @@ import { Outlet } from 'react-router-dom';
 
 const Layout = () => {
   const [showUploadModal, setShowUploadModal] = useState(false);
-  const { uploadFile, uploadProgress, fetchFiles, fetchQuota, error, setError } = useFiles();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const { uploadFile, uploadProgress, fetchFiles, fetchQuota, error, setError, startPolling, stopPolling } = useFiles();
   const [currentUpload, setCurrentUpload] = useState(null);
+
+  // Start real-time sync when layout is mounted
+  React.useEffect(() => {
+    startPolling();
+    return () => stopPolling();
+  }, [startPolling, stopPolling]);
 
   const handleFileSelect = async (file) => {
     setCurrentUpload(file);
@@ -29,12 +36,19 @@ const Layout = () => {
 
   return (
     <div className="h-screen bg-white flex flex-col overflow-hidden text-slate-700 font-outfit">
-      <Header user={keycloak.tokenParsed} />
+      <Header 
+        user={keycloak.tokenParsed} 
+        onMenuClick={() => setIsSidebarOpen(!isSidebarOpen)} 
+      />
       
-      <div className="flex flex-1 overflow-hidden">
-        <Sidebar onNewFile={() => setShowUploadModal(true)} />
+      <div className="flex flex-1 overflow-hidden relative">
+        <Sidebar 
+          onNewFile={() => setShowUploadModal(true)} 
+          isOpen={isSidebarOpen} 
+          onClose={() => setIsSidebarOpen(false)}
+        />
 
-        <main className="flex-1 overflow-y-auto bg-white p-6 relative">
+        <main className="flex-1 overflow-y-auto bg-white p-4 md:p-6 relative">
           <div className="max-w-6xl mx-auto h-full">
             <AnimatePresence>
               {error && (
