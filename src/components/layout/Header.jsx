@@ -25,8 +25,8 @@ const Header = ({ onMenuClick }) => {
     return () => clearInterval(interval);
   }, []);
 
-  const userAvatar = profile?.avatar_url || profile?.picture;
-  const initials = profile ? (profile.first_name?.[0] || '') + (profile.last_name?.[0] || '') : '?';
+  const userAvatar = profile?.avatar_url || profile?.picture || profile?.avatar;
+  const initials = profile ? (profile.first_name?.[0] || profile.given_name?.[0] || '') + (profile.last_name?.[0] || profile.family_name?.[0] || '') : '?';
 
   return (
     <header className="bg-white border-b border-slate-200 sticky top-0 z-50">

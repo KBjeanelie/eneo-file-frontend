@@ -65,7 +65,7 @@ const AppGrid = () => {
                       <span className="font-bold text-base uppercase">{app.name ? app.name[0] : '?'}</span>
                     )}
                   </div>
-                  <span className="text-xs font-bold text-slate-700 truncate w-full">{app.name}</span>
+                  <span className="text-sm font-bold text-slate-700 w-full">{app.name}</span>
                 </a>
               ))}
             </div>
