@@ -1,14 +1,7 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { ExternalLink, Calendar, Download, Shield, ShieldOff, MoreVertical, FileText } from 'lucide-react';
-import FileTypeIcon from './FileTypeIcon';
-import { formatBytes, formatDate } from '../../utils/format';
-import { motion } from 'framer-motion';
-
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { 
-  ExternalLink, Shield, ShieldOff, MoreVertical, 
+  Shield, ShieldOff, MoreVertical, 
   Copy, Check, RefreshCw, Share2, Trash2, Key 
 } from 'lucide-react';
 import FileTypeIcon from './FileTypeIcon';
