@@ -42,7 +42,7 @@ const FileCard = ({ file, viewMode = 'grid', onDelete, onRegenerateKey }) => {
           </div>
           <div className="truncate flex-1">
              <h3 className="text-sm font-bold text-slate-800 truncate leading-tight">{file.title || file.original_name}</h3>
-             <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">{file.original_name.split('.').pop()}</p>
+             <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">{file.original_name?.split('.').pop() || 'file'}</p>
           </div>
         </Link>
         
@@ -121,7 +121,7 @@ const FileCard = ({ file, viewMode = 'grid', onDelete, onRegenerateKey }) => {
              <h3 className="font-black text-slate-800 text-sm max-w-[160px] truncate" title={file.title || file.original_name}>
                {file.title || file.original_name}
              </h3>
-             <p className="text-[10px] text-slate-400 font-black uppercase tracking-[0.2em]">{file.original_name.split('.').pop()}</p>
+             <p className="text-[10px] text-slate-400 font-black uppercase tracking-[0.2em]">{file.original_name?.split('.').pop() || 'file'}</p>
           </div>
         </Link>
       </div>

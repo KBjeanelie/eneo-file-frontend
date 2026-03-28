@@ -92,7 +92,9 @@ export const FilesProvider = ({ children }) => {
       fetchFiles();
       return response.data.secret_key;
     } catch (err) {
-      setError("Erreur de régénération de la clé.");
+      const msg = "Erreur de régénération de la clé.";
+      setError(msg);
+      throw new Error(msg);
     }
   };
 

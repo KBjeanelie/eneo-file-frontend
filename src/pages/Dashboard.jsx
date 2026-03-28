@@ -211,9 +211,9 @@ const Dashboard = () => {
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         onClick={onNewFile}
-        className="fixed bottom-24 right-6 z-40 lg:hidden p-5 bg-eneo-violet text-white rounded-2xl shadow-2xl shadow-eneo-violet/40 border border-white/20"
+        className="fixed bottom-24 right-6 z-40 lg:hidden p-4 bg-eneo-violet text-white rounded-2xl shadow-2xl shadow-eneo-violet/40 border border-white/20"
       >
-        <Plus size={28} />
+        <Plus size={22} />
       </motion.button>
     </div>
   );

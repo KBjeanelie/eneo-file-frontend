@@ -6,6 +6,8 @@ import { useFiles } from '../../hooks/useFiles';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Outlet } from 'react-router-dom';
 import InstallPrompt from '../ui/InstallPrompt';
+import DropZone from '../ui/DropZone';
+import UploadProgress from '../ui/UploadProgress';
 
 const Layout = () => {
   const [showUploadModal, setShowUploadModal] = useState(false);
