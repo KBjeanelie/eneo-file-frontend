@@ -7,7 +7,7 @@ import {
   Cloud, 
   HardDrive 
 } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useFiles } from '../../hooks/useFiles';
 import { formatBytes } from '../../utils/format';
 
