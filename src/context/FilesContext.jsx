@@ -5,6 +5,7 @@ const FilesContext = createContext();
 
 export const FilesProvider = ({ children }) => {
   const [files, setFiles] = useState([]);
+  const [recentFiles, setRecentFiles] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState(null);
@@ -29,6 +30,18 @@ export const FilesProvider = ({ children }) => {
     } finally {
       setLoading(false);
       setIsRefreshing(false);
+    }
+  }, []);
+
+  const fetchRecentFiles = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await api.get('/files/recent/');
+      setRecentFiles(response.data);
+    } catch (err) {
+      console.error("Recent files fetch error", err);
+    } finally {
+      setLoading(false);
     }
   }, []);
 
@@ -107,8 +120,8 @@ export const FilesProvider = ({ children }) => {
   };
 
   const value = {
-    files, loading, isRefreshing, error, uploadProgress, quota,
-    fetchFiles, fetchQuota, uploadFile, deleteFile,
+    files, recentFiles, loading, isRefreshing, error, uploadProgress, quota,
+    fetchFiles, fetchRecentFiles, fetchQuota, uploadFile, deleteFile,
     regenerateSecretKey, validateSecretKey, setError,
     startPolling: () => setPolling(true),
     stopPolling: () => setPolling(false)
