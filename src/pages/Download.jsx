@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import api from '../api/client';
-import { Download as DownloadIcon, FileText, AlertTriangle, ShieldCheck, Lock } from 'lucide-react';
+import { Download as DownloadIcon, FileText, AlertTriangle, ShieldCheck, Lock, Key } from 'lucide-react';
 import { formatBytes, formatDate } from '../utils/format';
 import FileTypeIcon from '../components/ui/FileTypeIcon';
 import FilePreview from '../components/ui/FilePreview';
