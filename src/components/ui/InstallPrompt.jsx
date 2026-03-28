@@ -9,15 +9,16 @@ const InstallPrompt = () => {
 
   useEffect(() => {
     // Detect platform
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-    const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+    const ua = navigator.userAgent;
+    const isIOS = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
 
     if (isStandalone) return;
 
     if (isIOS) {
       setPlatform('ios');
-      // Show prompt after 5 seconds on first visit
-      const timer = setTimeout(() => setShow(true), 5000);
+      // Show prompt after 3 seconds on mobile
+      const timer = setTimeout(() => setShow(true), 3000);
       return () => clearTimeout(timer);
     }
 
@@ -25,7 +26,8 @@ const InstallPrompt = () => {
       e.preventDefault();
       setDeferredPrompt(e);
       setPlatform('android'); // Also used for desktop chrome
-      setTimeout(() => setShow(true), 5000);
+      // Show after 3 seconds
+      setTimeout(() => setShow(true), 3000);
     };
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);

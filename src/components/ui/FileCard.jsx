@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import FileTypeIcon from './FileTypeIcon';
 import { formatBytes, formatDate } from '../../utils/format';
+import { getSecureDownloadUrl } from '../../utils/url';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const FileCard = ({ file, viewMode = 'grid', onDelete, onRegenerateKey }) => {
@@ -149,7 +150,7 @@ const FileCard = ({ file, viewMode = 'grid', onDelete, onRegenerateKey }) => {
             </div>
             
             <button 
-              onClick={handleCopyLink}
+              onClick={() => window.open(getSecureDownloadUrl(file.file_url), '_blank')}
               className={`flex items-center space-x-2 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all duration-300 ${copiedLink ? 'bg-emerald-50 text-emerald-600' : 'bg-eneo-violet/5 text-eneo-violet hover:bg-eneo-violet hover:text-white shadow-sm hover:shadow-lg hover:shadow-violet-100'}`}
             >
               {copiedLink ? (
@@ -160,7 +161,7 @@ const FileCard = ({ file, viewMode = 'grid', onDelete, onRegenerateKey }) => {
               ) : (
                 <>
                   <Share2 size={12} />
-                  <span>Partager</span>
+                  <span>Télécharger</span>
                 </>
               )}
             </button>

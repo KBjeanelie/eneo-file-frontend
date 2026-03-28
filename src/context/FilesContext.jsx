@@ -21,7 +21,8 @@ export const FilesProvider = ({ children }) => {
     }
 
     try {
-      const response = await api.get('/files/');
+      // Add timestamp to bypass any browser/proxy cache for real-time sync
+      const response = await api.get(`/files/?_t=${Date.now()}`);
       const data = response.data.results !== undefined ? response.data.results : response.data;
       setFiles(Array.isArray(data) ? data : []);
       setError(null);
@@ -63,14 +64,20 @@ export const FilesProvider = ({ children }) => {
       const response = await api.post('/files/', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
         onUploadProgress: (progressEvent) => {
-          const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-          setUploadProgress(percentCompleted);
+          if (progressEvent.total) { 
+            const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+            setUploadProgress(percentCompleted);
+          } else {
+            // Fallback progress simulation if total is unknown
+            setUploadProgress(prev => Math.min(prev + 5, 95));
+          }
         }
       });
       fetchFiles();
       fetchQuota();
       return response.data;
     } catch (err) {
+      setUploadProgress(0);
       const msg = err.response?.data?.error || "Échec de l'upload.";
       throw new Error(msg);
     }
@@ -102,14 +109,19 @@ export const FilesProvider = ({ children }) => {
   useEffect(() => {
     let interval;
     if (polling) {
+      // Initial fetch when polling starts
+      fetchFiles(true);
+      fetchQuota();
+
       interval = setInterval(() => {
         if (!loading && !isRefreshing) {
           fetchFiles(true);
+          fetchQuota();
         }
-      }, 3000);
+      }, 5000); // 5s is safer for server load while maintaining sync feel
     }
     return () => clearInterval(interval);
-  }, [polling, fetchFiles]);
+  }, [polling, fetchFiles, fetchQuota]);
 
   const validateSecretKey = async (accessToken, secretKey) => {
     try {

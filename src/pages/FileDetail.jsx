@@ -26,6 +26,7 @@ import {
 import api from '../api/client';
 import { formatBytes, formatDate } from '../utils/format';
 import keycloak from '../auth/keycloak';
+import { getSecureDownloadUrl } from '../utils/url';
 import FileTypeIcon from '../components/ui/FileTypeIcon';
 import FilePreview from '../components/ui/FilePreview';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -143,7 +144,7 @@ const FileDetailPage = () => {
             <span>Modifier</span>
           </button>
           <button 
-            onClick={() => window.open(file.file_url, '_blank')}
+            onClick={() => window.open(getSecureDownloadUrl(file.file_url), '_blank')}
             className="px-5 py-2.5 bg-eneo-violet text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-violet-800 transition-all shadow-lg shadow-eneo-violet/20 flex items-center space-x-2"
           >
             <Download size={14} />
