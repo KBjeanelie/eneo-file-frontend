@@ -11,20 +11,27 @@ const AppGrid = () => {
     { name: 'Eneo Account', url: 'https://account.eneo.cm', description: 'Mon profil' }
   ]);
 
-  // Try to fetch real apps if possible
   useEffect(() => {
     const fetchApps = async () => {
       try {
-        const response = await api.get('/me/apps/'); // This might need a different client or the base Eneo Account URL
-        if (response.data && Array.isArray(response.data)) {
-          setApps(response.data);
+        const response = await api.get('https://myaccount.auth.eneogroup.site/api/v1/me/apps/');
+        if (response.data && response.data.apps) {
+          // Add current app to the list if not present, and mark it as active
+          const fetchedApps = response.data.apps.map(app => ({
+            ...app,
+            active: app.name === 'Eneo File'
+          }));
+          setApps(fetchedApps);
         }
       } catch (err) {
         console.error("Could not fetch apps from Eneo Account", err);
       }
     };
-    // fetchApps(); // Disable for now as we don't have the full URL configuration for Eneo Account yet
-  }, []);
+    
+    if (isOpen) {
+      fetchApps();
+    }
+  }, [isOpen]);
 
   return (
     <div className="relative">
@@ -52,7 +59,11 @@ const AppGrid = () => {
                   className="flex flex-col items-center p-3 rounded-2xl hover:bg-slate-50 transition-colors group text-center"
                 >
                   <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-2 shadow-sm ${app.active ? 'bg-eneo-violet text-white' : 'bg-slate-100 text-slate-400 group-hover:bg-white group-hover:shadow-md transition-all'}`}>
-                    <span className="font-bold text-sm uppercase">{app.name[0]}</span>
+                    {app.logo_url ? (
+                      <img src={app.logo_url} alt={app.name} className="w-8 h-8 object-contain" />
+                    ) : (
+                      <span className="font-bold text-sm uppercase">{app.name ? app.name[0] : '?'}</span>
+                    )}
                   </div>
                   <span className="text-[10px] font-bold text-slate-700 truncate w-full">{app.name}</span>
                 </a>

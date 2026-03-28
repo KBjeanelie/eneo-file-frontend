@@ -11,19 +11,6 @@ export const useFiles = () => {
 
   const [polling, setPolling] = useState(false);
 
-  // Real-time synchronization: Poll every 3 seconds if not already loading
-  useEffect(() => {
-    let interval;
-    if (polling) {
-      interval = setInterval(() => {
-        if (!loading) {
-          fetchFiles();
-        }
-      }, 3000);
-    }
-    return () => clearInterval(interval);
-  }, [polling, fetchFiles, loading]);
-
   const startPolling = useCallback(() => setPolling(true), []);
   const stopPolling = useCallback(() => setPolling(false), []);
 
@@ -40,6 +27,19 @@ export const useFiles = () => {
       setLoading(false);
     }
   }, []);
+
+  // Real-time synchronization: Poll every 3 seconds if not already loading
+  useEffect(() => {
+    let interval;
+    if (polling) {
+      interval = setInterval(() => {
+        if (!loading) {
+          fetchFiles();
+        }
+      }, 3000);
+    }
+    return () => clearInterval(interval);
+  }, [polling, fetchFiles, loading]);
 
   const fetchRecentFiles = useCallback(async () => {
     try {
