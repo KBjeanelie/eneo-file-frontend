@@ -1,12 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from './Header';
 import Sidebar from './Sidebar';
 import keycloak from '../../auth/keycloak';
 import { useFiles } from '../../hooks/useFiles';
 import { AnimatePresence, motion } from 'framer-motion';
-import DropZone from '../ui/DropZone';
-import UploadProgress from '../ui/UploadProgress';
 import { Outlet } from 'react-router-dom';
+import InstallPrompt from '../ui/InstallPrompt';
 
 const Layout = () => {
   const [showUploadModal, setShowUploadModal] = useState(false);
@@ -15,7 +14,7 @@ const Layout = () => {
   const [currentUpload, setCurrentUpload] = useState(null);
 
   // Start real-time sync when layout is mounted
-  React.useEffect(() => {
+  useEffect(() => {
     startPolling();
     return () => stopPolling();
   }, [startPolling, stopPolling]);
@@ -49,7 +48,7 @@ const Layout = () => {
         />
 
         <main className="flex-1 overflow-y-auto bg-white p-4 md:p-6 relative">
-          <div className="max-w-6xl mx-auto h-full">
+          <div className="max-w-6xl mx-auto h-full pb-20">
             <AnimatePresence>
               {error && (
                 <motion.div 
@@ -65,10 +64,12 @@ const Layout = () => {
                 </motion.div>
               )}
             </AnimatePresence>
-            <Outlet />
+            <Outlet context={{ onNewFile: () => setShowUploadModal(true) }} />
           </div>
         </main>
       </div>
+
+      <InstallPrompt />
 
       {/* Shared Upload Modal */}
       <AnimatePresence>

@@ -2,15 +2,17 @@ import React, { useEffect, useState } from 'react';
 import { useFiles } from '../hooks/useFiles';
 import { 
   AlertCircle, CheckCircle2, Copy, Info, List, 
-  Grid3X3, MoreVertical, Files, Key 
+  Grid3X3, MoreVertical, Files, Key, Plus 
 } from 'lucide-react';
 import DropZone from '../components/ui/DropZone';
 import FileCard from '../components/ui/FileCard';
 import UploadProgress from '../components/ui/UploadProgress';
 import keycloak from '../auth/keycloak';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useOutletContext } from 'react-router-dom';
 
 const Dashboard = () => {
+  const { onNewFile } = useOutletContext();
   const { 
     files, loading, error, uploadProgress, 
     fetchFiles, uploadFile, deleteFile, regenerateSecretKey, 
@@ -46,12 +48,21 @@ const Dashboard = () => {
     <div className="space-y-6 md:space-y-8 animate-in fade-in duration-500 pb-10">
       {/* Context Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-6">
-         <div className="flex items-center space-x-2">
-            <div className="bg-eneo-violet/10 p-2 rounded-xl">
-              <Files size={20} className="text-eneo-violet" />
-            </div>
-            <h1 className="text-xl md:text-2xl font-black text-slate-800 tracking-tight">Mes Fichiers</h1>
-         </div>
+          <div className="flex items-center space-x-4">
+             <div className="flex items-center space-x-2">
+                <div className="bg-eneo-violet/10 p-2 rounded-xl">
+                  <Files size={20} className="text-eneo-violet" />
+                </div>
+                <h1 className="text-xl md:text-2xl font-black text-slate-800 tracking-tight">Mes Fichiers</h1>
+             </div>
+             <button 
+               onClick={onNewFile}
+               className="hidden sm:flex items-center space-x-2 bg-eneo-violet text-white px-4 py-2 rounded-xl shadow-lg shadow-eneo-violet/20 hover:bg-violet-800 transition-all font-bold text-xs uppercase tracking-widest"
+             >
+               <Plus size={14} />
+               <span>Nouveau</span>
+             </button>
+          </div>
          
          <div className="flex items-center justify-between sm:justify-end space-x-3">
             <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest mr-2 hidden xs:block">Affichage</span>
@@ -179,13 +190,31 @@ const Dashboard = () => {
             <div className="bg-white p-8 rounded-[2rem] shadow-xl shadow-slate-200/50 mb-6 group hover:scale-110 transition-transform duration-500">
                <Files size={48} className="text-slate-200 group-hover:text-eneo-violet transition-colors duration-500" />
             </div>
-            <div className="text-center space-y-1">
-              <p className="text-slate-500 font-black uppercase tracking-widest">Espace de Stockage Vide</p>
-              <p className="text-slate-400 text-xs font-bold px-8">Commencez par uploader votre premier fichier sécurisé en cliquant sur "Nouveau"</p>
+            <div className="text-center space-y-4">
+              <div className="space-y-1">
+                <p className="text-slate-500 font-black uppercase tracking-widest">Espace de Stockage Vide</p>
+                <p className="text-slate-400 text-xs font-bold px-8">Commencez par uploader votre premier fichier sécurisé</p>
+              </div>
+              <button 
+                onClick={onNewFile}
+                className="bg-eneo-violet text-white px-8 py-4 rounded-2xl shadow-xl shadow-eneo-violet/30 hover:bg-violet-800 transition-all font-black uppercase tracking-[0.2em] text-[10px]"
+              >
+                Uploader maintenant
+              </button>
             </div>
           </div>
         )}
       </section>
+
+      {/* Mobile FAB */}
+      <motion.button
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        onClick={onNewFile}
+        className="fixed bottom-24 right-6 z-40 lg:hidden p-5 bg-eneo-violet text-white rounded-2xl shadow-2xl shadow-eneo-violet/40 border border-white/20"
+      >
+        <Plus size={28} />
+      </motion.button>
     </div>
   );
 };

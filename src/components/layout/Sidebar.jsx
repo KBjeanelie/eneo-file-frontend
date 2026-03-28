@@ -52,7 +52,7 @@ const Sidebar = ({ onNewFile, isOpen, onClose }) => {
           <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-full text-slate-400">×</button>
         </div>
 
-        <div className="px-6 mb-8">
+        <div className="px-6 mb-8 hidden lg:block">
           <motion.button 
             whileHover={{ scale: 1.02, boxShadow: "0 10px 15px -3px rgb(0 0 0 / 0.1)" }}
             whileTap={{ scale: 0.98 }}

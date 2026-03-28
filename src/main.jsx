@@ -40,3 +40,12 @@ initKeycloak().then((authenticated) => {
       root.render(<div className="p-10 text-red-600">Erreur de connexion SSO. Veuillez contacter l'admin.</div>);
   }
 });
+
+// Register Service Worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then(reg => console.log('SW registered'))
+      .catch(err => console.log('SW error', err));
+  });
+}
