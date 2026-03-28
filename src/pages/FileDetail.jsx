@@ -18,7 +18,10 @@ import {
   ExternalLink,
   ChevronRight,
   Settings,
-  Copy
+  Copy,
+  Key,
+  RefreshCw,
+  Check
 } from 'lucide-react';
 import api from '../api/client';
 import { formatBytes, formatDate } from '../utils/format';
@@ -35,6 +38,8 @@ const FileDetailPage = () => {
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
   const [formData, setFormData] = useState({ title: '', max_downloads: 3 });
+  const [copiedKey, setCopiedKey] = useState(false);
+  const { regenerateSecretKey } = useFiles();
   
   const fetchFileDetail = async () => {
     try {
@@ -252,6 +257,35 @@ const FileDetailPage = () => {
                       <span className="text-xs font-bold">Taille</span>
                    </div>
                    <span className="text-xs font-black text-slate-700">{formatBytes(file.file_size)}</span>
+                </div>
+                <div className="flex items-center justify-between p-4 bg-slate-50/50 rounded-2xl border border-eneo-violet/10">
+                   <div className="flex items-center space-x-3 text-slate-500">
+                      <Key size={16} className="text-eneo-violet" />
+                      <span className="text-xs font-bold">Clé Secrète</span>
+                   </div>
+                   <div className="flex items-center space-x-2">
+                      <span className="text-xs font-mono font-black tracking-widest text-slate-800">{file.secret_key}</span>
+                      <button 
+                         onClick={() => {
+                            navigator.clipboard.writeText(file.secret_key);
+                            setCopiedKey(true);
+                            setTimeout(() => setCopiedKey(false), 2000);
+                         }}
+                         className={`p-1.5 rounded-lg transition-all ${copiedKey ? 'text-emerald-500' : 'text-slate-300 hover:text-eneo-violet'}`}
+                      >
+                         {copiedKey ? <Check size={14} /> : <Copy size={14} />}
+                      </button>
+                      <button 
+                         onClick={async () => {
+                            const newKey = await regenerateSecretKey(file.id);
+                            setFile({...file, secret_key: newKey});
+                         }}
+                         className="p-1.5 text-slate-300 hover:text-eneo-violet rounded-lg transition-all"
+                         title="Régénérer"
+                      >
+                         <RefreshCw size={14} />
+                      </button>
+                   </div>
                 </div>
                 <div className="flex items-center justify-between p-4 bg-slate-50/50 rounded-2xl">
                    <div className="flex items-center space-x-3 text-slate-500">

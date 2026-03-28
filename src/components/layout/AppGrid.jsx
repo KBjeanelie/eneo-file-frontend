@@ -58,14 +58,14 @@ const AppGrid = () => {
                   rel="noopener noreferrer"
                   className="flex flex-col items-center p-3 rounded-2xl hover:bg-slate-50 transition-colors group text-center"
                 >
-                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-2 shadow-sm ${app.active ? 'bg-eneo-violet text-white' : 'bg-slate-100 text-slate-400 group-hover:bg-white group-hover:shadow-md transition-all'}`}>
+                  <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-2 shadow-sm ${app.active ? 'bg-eneo-violet text-white' : 'bg-slate-100 text-slate-400 group-hover:bg-white group-hover:shadow-md transition-all'}`}>
                     {app.logo_url ? (
-                      <img src={app.logo_url} alt={app.name} className="w-8 h-8 object-contain" />
+                      <img src={app.logo_url} alt={app.name} className="w-10 h-10 object-contain" />
                     ) : (
-                      <span className="font-bold text-sm uppercase">{app.name ? app.name[0] : '?'}</span>
+                      <span className="font-bold text-base uppercase">{app.name ? app.name[0] : '?'}</span>
                     )}
                   </div>
-                  <span className="text-[10px] font-bold text-slate-700 truncate w-full">{app.name}</span>
+                  <span className="text-xs font-bold text-slate-700 truncate w-full">{app.name}</span>
                 </a>
               ))}
             </div>
