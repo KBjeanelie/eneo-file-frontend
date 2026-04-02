@@ -5,7 +5,7 @@ import keycloak from '../../auth/keycloak';
 import { useFiles } from '../../hooks/useFiles';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Outlet } from 'react-router-dom';
-import { CheckCircle2, Copy, Key, Info } from 'lucide-react';
+import { CheckCircle2, Copy, Key, Info, Download } from 'lucide-react';
 import InstallPrompt from '../ui/InstallPrompt';
 import DropZone from '../ui/DropZone';
 import UploadProgress from '../ui/UploadProgress';
