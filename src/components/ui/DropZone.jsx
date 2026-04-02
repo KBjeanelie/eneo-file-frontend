@@ -67,7 +67,7 @@ const DropZone = ({ onFileSelect, isUploading }) => {
         </div>
         
         <div className="flex items-center space-x-2 text-xs font-medium text-slate-400">
-          <span className="bg-slate-100 px-2 py-1 rounded">Max 50 Mo</span>
+          <span className="bg-slate-100 px-2 py-1 rounded">Max 250 Mo</span>
           <span className="bg-slate-100 px-2 py-1 rounded">Exp. 3 jours</span>
           <span className="bg-slate-100 px-2 py-1 rounded">Lien sécurisé</span>
         </div>

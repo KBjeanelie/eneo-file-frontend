@@ -144,7 +144,7 @@ const FileDetailPage = () => {
             <span>Modifier</span>
           </button>
           <button 
-            onClick={() => window.open(getSecureDownloadUrl(file.file_url), '_blank')}
+            onClick={() => window.location.assign(file.direct_download_url)}
             className="px-5 py-2.5 bg-eneo-violet text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-violet-800 transition-all shadow-lg shadow-eneo-violet/20 flex items-center space-x-2"
           >
             <Download size={14} />

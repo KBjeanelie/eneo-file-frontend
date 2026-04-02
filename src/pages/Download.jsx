@@ -50,8 +50,9 @@ const DownloadPage = () => {
   };
 
   const handleDownload = () => {
-    if (unlockedData?.download_url) {
-      window.open(unlockedData.download_url, '_blank');
+    const dUrl = unlockedData?.download_url || file?.direct_download_url;
+    if (dUrl) {
+      window.location.assign(dUrl);
     } else {
       setShowKeyModal(true);
     }
@@ -66,7 +67,7 @@ const DownloadPage = () => {
   }
 
   const isProtected = file && !file.file_url && !unlockedData;
-  const currentFileUrl = unlockedData?.download_url || file?.file_url;
+  const currentFileUrl = unlockedData?.preview_url || file?.file_url;
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-start p-4 py-8 md:py-16 font-outfit">

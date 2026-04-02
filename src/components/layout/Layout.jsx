@@ -5,6 +5,7 @@ import keycloak from '../../auth/keycloak';
 import { useFiles } from '../../hooks/useFiles';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Outlet } from 'react-router-dom';
+import { CheckCircle2, Copy, Key, Info } from 'lucide-react';
 import InstallPrompt from '../ui/InstallPrompt';
 import DropZone from '../ui/DropZone';
 import UploadProgress from '../ui/UploadProgress';
@@ -12,8 +13,9 @@ import UploadProgress from '../ui/UploadProgress';
 const Layout = () => {
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const { uploadFile, uploadProgress, fetchFiles, fetchQuota, error, setError, startPolling, stopPolling } = useFiles();
+  const { uploadFile, uploadProgress, fetchFiles, fetchRecentFiles, fetchQuota, error, setError, startPolling, stopPolling } = useFiles();
   const [currentUpload, setCurrentUpload] = useState(null);
+  const [lastUploadResult, setLastUploadResult] = useState(null);
 
   // Start real-time sync when layout is mounted
   useEffect(() => {
@@ -24,10 +26,12 @@ const Layout = () => {
   const handleFileSelect = async (file) => {
     setCurrentUpload(file);
     try {
-      await uploadFile(file);
+      const result = await uploadFile(file);
+      setLastUploadResult(result);
       setCurrentUpload(null);
       setShowUploadModal(false);
       fetchFiles();
+      fetchRecentFiles();
       fetchQuota();
     } catch (err) {
       setCurrentUpload(null);
@@ -116,6 +120,75 @@ const Layout = () => {
                  </div>
               </motion.div>
            </motion.div>
+         )}
+      </AnimatePresence>
+
+      {/* Global Success Upload Toast */}
+      <AnimatePresence>
+         {lastUploadResult && (
+          <motion.div 
+             initial={{ opacity: 0, y: 50, scale: 0.9 }}
+             animate={{ opacity: 1, y: 0, scale: 1 }}
+             exit={{ opacity: 0, y: 50, scale: 0.9 }}
+             className="fixed bottom-6 right-6 left-6 md:left-auto md:w-[400px] z-[200] bg-slate-900 text-white p-6 rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.3)] border border-white/10"
+          >
+            <div className="flex justify-between items-start mb-6">
+               <div className="flex items-center space-x-3">
+                  <div className="bg-emerald-500 p-2 rounded-full shadow-lg shadow-emerald-500/20">
+                     <CheckCircle2 size={18} />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="font-black text-sm uppercase tracking-wider">Fichier Ajouté</span>
+                    <span className="text-[10px] text-white/40 font-bold uppercase tracking-widest mt-0.5">{lastUploadResult.original_name}</span>
+                  </div>
+               </div>
+               <button onClick={() => setLastUploadResult(null)} className="p-2 hover:bg-white/10 rounded-full transition-colors opacity-50 hover:opacity-100">×</button>
+            </div>
+            
+            <div className="space-y-3">
+              <div className="flex flex-col space-y-2">
+                <span className="text-[9px] font-black uppercase tracking-[0.2em] text-white/30 ml-1">Lien de partage</span>
+                <div className="flex items-center space-x-2 bg-white/5 p-3 rounded-2xl border border-white/10 group hover:border-white/20 transition-all font-outfit">
+                  <code className="text-[10px] flex-1 truncate font-mono text-emerald-300">{lastUploadResult.download_url}</code>
+                  <div className="flex items-center space-x-1">
+                    <button 
+                      onClick={() => window.location.assign(lastUploadResult.direct_download_url)}
+                      title="Télécharger"
+                      className="p-2 hover:bg-emerald-500/10 text-emerald-400 rounded-xl transition-colors"
+                    >
+                      <Download size={14} />
+                    </button>
+                    <button 
+                      onClick={() => navigator.clipboard.writeText(lastUploadResult.download_url)}
+                      title="Copier le lien"
+                      className="p-2 hover:bg-emerald-500/10 text-emerald-400 rounded-xl transition-colors"
+                    >
+                      <Copy size={14} />
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex flex-col space-y-2">
+                <span className="text-[9px] font-black uppercase tracking-[0.2em] text-white/30 ml-1">Clé Secrète</span>
+                <div className="flex items-center space-x-2 bg-white/5 p-3 rounded-2xl border border-white/10 font-outfit">
+                  <Key size={14} className="text-eneo-violet" />
+                  <code className="text-[12px] flex-1 font-mono font-black tracking-[0.3em] text-white">{lastUploadResult.secret_key}</code>
+                  <button 
+                    onClick={() => navigator.clipboard.writeText(lastUploadResult.secret_key)}
+                    className="p-2 hover:bg-white/10 text-white/60 rounded-xl transition-colors"
+                  >
+                    <Copy size={14} />
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <p className="text-[9px] text-white/30 mt-6 flex items-center space-x-2 px-1 font-outfit">
+              <Info size={10} className="text-white/20" />
+              <span className="font-bold italic uppercase tracking-tighter">Communication Chiffrée & Protection Active</span>
+            </p>
+          </motion.div>
          )}
       </AnimatePresence>
     </div>

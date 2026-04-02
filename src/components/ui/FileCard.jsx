@@ -150,7 +150,7 @@ const FileCard = ({ file, viewMode = 'grid', onDelete, onRegenerateKey }) => {
             </div>
             
             <button 
-              onClick={() => window.open(getSecureDownloadUrl(file.file_url), '_blank')}
+              onClick={() => window.location.assign(file.direct_download_url)}
               className={`flex items-center space-x-2 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all duration-300 ${copiedLink ? 'bg-emerald-50 text-emerald-600' : 'bg-eneo-violet/5 text-eneo-violet hover:bg-eneo-violet hover:text-white shadow-sm hover:shadow-lg hover:shadow-violet-100'}`}
             >
               {copiedLink ? (

@@ -74,6 +74,7 @@ export const FilesProvider = ({ children }) => {
         }
       });
       fetchFiles();
+      fetchRecentFiles();
       fetchQuota();
       return response.data;
     } catch (err) {
@@ -116,6 +117,7 @@ export const FilesProvider = ({ children }) => {
       interval = setInterval(() => {
         if (!loading && !isRefreshing) {
           fetchFiles(true);
+          fetchRecentFiles();
           fetchQuota();
         }
       }, 5000); // 5s is safer for server load while maintaining sync feel
